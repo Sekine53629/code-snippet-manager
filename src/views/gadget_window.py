@@ -153,36 +153,50 @@ class GadgetWindow(QMainWindow):
 
         # Minimize button
         btn_minimize = QPushButton("—")
-        btn_minimize.setFixedSize(30, 30)
-        btn_minimize.clicked.connect(self.toggle_visibility)
+        btn_minimize.setFixedSize(32, 32)
+        btn_minimize.clicked.connect(self.hide_window)
+        btn_minimize.setToolTip("ウィンドウを非表示")
+        btn_minimize.setCursor(Qt.CursorShape.PointingHandCursor)
         btn_minimize.setStyleSheet("""
             QPushButton {
-                background-color: #444444;
+                background-color: rgba(255, 189, 68, 200);
                 color: white;
-                border: none;
-                border-radius: 15px;
-                font-size: 16px;
+                border: 2px solid rgba(255, 189, 68, 255);
+                border-radius: 16px;
+                font-size: 18px;
+                font-weight: bold;
             }
             QPushButton:hover {
-                background-color: #555555;
+                background-color: rgba(255, 189, 68, 255);
+                border: 2px solid rgba(255, 255, 255, 200);
+            }
+            QPushButton:pressed {
+                background-color: rgba(200, 150, 50, 255);
             }
         """)
         header.addWidget(btn_minimize)
 
         # Close button
         btn_close = QPushButton("×")
-        btn_close.setFixedSize(30, 30)
-        btn_close.clicked.connect(self.close)
+        btn_close.setFixedSize(32, 32)
+        btn_close.clicked.connect(self.close_application)
+        btn_close.setToolTip("アプリケーションを終了")
+        btn_close.setCursor(Qt.CursorShape.PointingHandCursor)
         btn_close.setStyleSheet("""
             QPushButton {
-                background-color: #D32F2F;
+                background-color: rgba(255, 69, 58, 200);
                 color: white;
-                border: none;
-                border-radius: 15px;
-                font-size: 20px;
+                border: 2px solid rgba(255, 69, 58, 255);
+                border-radius: 16px;
+                font-size: 22px;
+                font-weight: bold;
             }
             QPushButton:hover {
-                background-color: #F44336;
+                background-color: rgba(255, 69, 58, 255);
+                border: 2px solid rgba(255, 255, 255, 200);
+            }
+            QPushButton:pressed {
+                background-color: rgba(200, 50, 45, 255);
             }
         """)
         header.addWidget(btn_close)
@@ -926,3 +940,8 @@ class GadgetWindow(QMainWindow):
         self.hide()
         self.is_visible = False
         self.fade_animation.finished.disconnect(self._finish_hide)
+
+    def close_application(self):
+        """Close the entire application."""
+        from PyQt6.QtWidgets import QApplication
+        QApplication.quit()

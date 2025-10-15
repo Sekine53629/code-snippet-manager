@@ -187,8 +187,8 @@ const increment = () => {
             font-size: 13px;
         }
         QMainWindow {
-            background-color: rgba(28, 28, 30, 90);
-            border: 1px solid rgba(255, 255, 255, 35);
+            background-color: rgba(28, 28, 30, 120);
+            border: 3px solid rgba(255, 255, 255, 100);
             border-radius: 20px;
         }
         /* Search Bar - Frosted glass effect */
@@ -220,10 +220,10 @@ const increment = () => {
         QPushButton:pressed {
             background-color: rgba(58, 58, 60, 130);
         }
-        /* Tree Widget - Semi-transparent with blur */
+        /* Tree Widget - More opaque for readability */
         QTreeWidget {
-            background-color: rgba(44, 44, 46, 70);
-            border: 1px solid rgba(255, 255, 255, 15);
+            background-color: rgba(44, 44, 46, 200);
+            border: 2px solid rgba(255, 255, 255, 80);
             border-radius: 16px;
             outline: none;
             color: #f5f5f7;
@@ -231,22 +231,22 @@ const increment = () => {
         }
         QTreeWidget::item {
             padding: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 10);
+            border-bottom: 1px solid rgba(255, 255, 255, 20);
             border-radius: 10px;
             margin: 3px;
         }
         QTreeWidget::item:hover {
-            background-color: rgba(72, 72, 74, 70);
+            background-color: rgba(72, 72, 74, 150);
         }
         QTreeWidget::item:selected {
-            background-color: rgba(10, 132, 255, 80);
+            background-color: rgba(10, 132, 255, 180);
             color: #ffffff;
-            border: 1px solid rgba(10, 132, 255, 60);
+            border: 1px solid rgba(10, 132, 255, 120);
         }
-        /* Text Preview - Frosted dark glass */
+        /* Text Preview - More opaque for readability */
         QTextEdit {
-            background-color: rgba(28, 28, 30, 75);
-            border: 1px solid rgba(255, 255, 255, 18);
+            background-color: rgba(28, 28, 30, 200);
+            border: 2px solid rgba(255, 255, 255, 80);
             border-radius: 16px;
             color: #f5f5f7;
             font-family: 'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace;
