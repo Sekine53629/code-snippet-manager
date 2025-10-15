@@ -432,6 +432,57 @@ class DatabaseManager:
             session.commit()
             return True
 
+    def toggle_favorite(self, snippet_id: int) -> bool:
+        """Toggle favorite status of a snippet.
+
+        Args:
+            snippet_id: Snippet ID to toggle.
+
+        Returns:
+            bool: New favorite status (True if now favorite, False if not).
+        """
+        with self.get_local_session() as session:
+            snippet = session.query(Snippet).filter(Snippet.id == snippet_id).first()
+
+            if not snippet:
+                return False
+
+            # Toggle favorite status
+            snippet.is_favorite = not snippet.is_favorite
+            session.commit()
+            return snippet.is_favorite
+
+    def get_favorite_snippets(self) -> List[Dict[str, Any]]:
+        """Get all favorite snippets.
+
+        Returns:
+            List[Dict]: List of favorite snippets as dictionaries.
+        """
+        favorites = []
+
+        with self.get_local_session() as session:
+            fav_snippets = (
+                session.query(Snippet)
+                .filter(Snippet.is_favorite == True)
+                .order_by(Snippet.usage_count.desc(), Snippet.name)
+                .all()
+            )
+
+            for snippet in fav_snippets:
+                favorites.append({
+                    'id': snippet.id,
+                    'name': snippet.name,
+                    'code': snippet.code,
+                    'description': snippet.description,
+                    'language': snippet.language,
+                    'usage_count': snippet.usage_count,
+                    'last_used': snippet.last_used,
+                    'is_favorite': snippet.is_favorite,
+                    'source': snippet.source
+                })
+
+        return favorites
+
     def get_or_create_tag(self, name: str, parent_id: Optional[int] = None,
                          tag_type: str = 'folder') -> int:
         """Get existing tag or create new one.
