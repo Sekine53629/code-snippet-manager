@@ -49,10 +49,14 @@ def import_snippets_from_json(db_manager: DatabaseManager, input_file: str, merg
     # Confirm import
     if not merge:
         print("\n⚠️  WARNING: This will CLEAR all existing data!")
-        response = input("Continue? (yes/no): ")
-        if response.lower() not in ['yes', 'y']:
-            print("Import cancelled.")
-            return
+        try:
+            response = input("Continue? (yes/no): ")
+            if response.lower() not in ['yes', 'y']:
+                print("Import cancelled.")
+                return
+        except EOFError:
+            # Running in non-interactive mode, proceed anyway
+            print("Running in non-interactive mode, proceeding with import...")
     else:
         print("\n🔄 Merge mode: Existing data will be preserved.")
 
