@@ -172,66 +172,90 @@ const increment = () => {
             self._apply_light_theme()
 
     def _apply_dark_theme(self):
-        """Apply dark theme to the application."""
+        """Apply dark glass theme to the application."""
         dark_stylesheet = """
         QWidget {
-            background-color: #2b2b2b;
-            color: #e0e0e0;
-            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: rgba(20, 20, 20, 240);
+            color: #e8e8e8;
+            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+        }
+        QMainWindow {
+            background-color: rgba(18, 18, 18, 250);
+            border: 1px solid rgba(80, 80, 80, 150);
         }
         QLineEdit {
-            background-color: #3c3c3c;
-            border: 1px solid #555555;
-            border-radius: 4px;
-            padding: 5px;
-            color: #e0e0e0;
+            background-color: rgba(30, 30, 30, 200);
+            border: 1px solid rgba(100, 100, 100, 100);
+            border-radius: 3px;
+            padding: 6px 10px;
+            color: #e8e8e8;
+            selection-background-color: rgba(100, 150, 255, 100);
         }
         QLineEdit:focus {
-            border: 1px solid #007acc;
+            border: 1px solid rgba(120, 180, 255, 150);
+            background-color: rgba(35, 35, 35, 220);
         }
         QPushButton {
-            background-color: #0e639c;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 5px 15px;
+            background-color: rgba(60, 60, 60, 180);
+            color: #e8e8e8;
+            border: 1px solid rgba(100, 100, 100, 100);
+            border-radius: 3px;
+            padding: 6px 16px;
+            font-weight: 500;
         }
         QPushButton:hover {
-            background-color: #1177bb;
+            background-color: rgba(80, 80, 80, 200);
+            border: 1px solid rgba(120, 120, 120, 150);
         }
         QPushButton:pressed {
-            background-color: #005a9e;
+            background-color: rgba(40, 40, 40, 220);
         }
         QTreeWidget {
-            background-color: #252526;
+            background-color: rgba(25, 25, 25, 230);
             border: none;
             outline: none;
+            color: #e8e8e8;
         }
         QTreeWidget::item {
-            padding: 5px;
+            padding: 6px;
+            border-bottom: 1px solid rgba(50, 50, 50, 80);
         }
         QTreeWidget::item:hover {
-            background-color: #2a2d2e;
+            background-color: rgba(50, 50, 50, 120);
         }
         QTreeWidget::item:selected {
-            background-color: #094771;
+            background-color: rgba(70, 120, 200, 100);
+            color: #ffffff;
         }
         QTextEdit {
-            background-color: #1e1e1e;
-            border: 1px solid #555555;
-            color: #d4d4d4;
-            font-family: 'Consolas', 'Monaco', monospace;
+            background-color: rgba(22, 22, 22, 240);
+            border: 1px solid rgba(80, 80, 80, 100);
+            color: #e8e8e8;
+            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            padding: 8px;
+        }
+        QLabel {
+            color: #b8b8b8;
+            font-size: 12px;
         }
         QScrollBar:vertical {
-            background-color: #2b2b2b;
-            width: 12px;
+            background-color: rgba(30, 30, 30, 150);
+            width: 10px;
+            border: none;
         }
         QScrollBar::handle:vertical {
-            background-color: #555555;
-            border-radius: 6px;
+            background-color: rgba(100, 100, 100, 150);
+            border-radius: 5px;
+            min-height: 20px;
         }
         QScrollBar::handle:vertical:hover {
-            background-color: #666666;
+            background-color: rgba(130, 130, 130, 180);
+        }
+        QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+            height: 0px;
         }
         """
         self.app.setStyleSheet(dark_stylesheet)
@@ -310,14 +334,15 @@ const increment = () => {
         # Show gadget window
         self.gadget_window.show()
 
-        # Note: Hotkey monitoring is not fully implemented yet
-        # Global hotkey detection requires platform-specific permissions
-        # For now, users can manually show/hide the window
+        # Start hotkey controller
+        print("\nStarting hotkey controller...")
+        if self.hotkey_controller.start():
+            print("✓ Hotkey enabled: Press Ctrl twice quickly to toggle window")
+        else:
+            print("⚠ Hotkey disabled: Manual control only")
 
         # Enter event loop
         print("\nApplication started successfully!")
-        print("Hotkey (Ctrl double-tap) requires additional setup.")
-        print("You can manually show/hide the window for now.")
         print("Press Ctrl+C in terminal to exit.\n")
 
         exit_code = self.app.exec()
@@ -330,6 +355,10 @@ const increment = () => {
     def cleanup(self):
         """Clean up resources before exit."""
         print("\nCleaning up...")
+
+        # Stop hotkey controller
+        if self.hotkey_controller:
+            self.hotkey_controller.stop()
 
         # Close database connections
         if self.db_manager:

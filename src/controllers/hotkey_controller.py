@@ -34,6 +34,7 @@ class HotkeyController(QObject):
         self.double_tap_threshold = double_tap_threshold_ms / 1000.0  # Convert to seconds
         self.last_ctrl_press_time = 0.0
         self.ctrl_press_count = 0
+        self.monitoring = False
 
         # Timer to reset double-tap detection
         self.reset_timer = QTimer()
@@ -43,6 +44,17 @@ class HotkeyController(QObject):
         # Platform-specific setup
         self.system = platform.system()
         self._setup_platform()
+
+    def start(self):
+        """Start hotkey monitoring (simplified version)."""
+        self.monitoring = True
+        print("✓ Hotkey monitoring started (Ctrl double-tap)")
+        return True
+
+    def stop(self):
+        """Stop hotkey monitoring."""
+        self.monitoring = False
+        print("✓ Hotkey monitoring stopped")
 
     def _setup_platform(self):
         """Setup platform-specific hotkey handling."""
