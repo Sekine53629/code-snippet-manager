@@ -1,0 +1,38 @@
+# GUI フレームワーク
+PyQt6==6.6.1
+PyQt6-Qt6==6.6.1
+
+# データベース
+SQLAlchemy==2.0.23
+
+# ホットキー管理
+pynput==1.7.6
+keyboard==0.13.5
+
+# クリップボード操作
+pyperclip==1.8.2
+
+# シンタックスハイライト
+Pygments==2.17.2
+
+# ユーティリティ
+python-dateutil==2.8.2
+
+# 検索（あいまい検索）
+fuzzywuzzy==0.18.0
+python-Levenshtein==0.23.0
+
+# アニメーション
+PyQt6-Charts==6.6.0
+
+# 設定管理
+pydantic==2.5.2
+pydantic-settings==2.1.0
+
+# テスト
+pytest==7.4.3
+pytest-qt==4.2.0
+
+# Windows配布用
+pyinstaller==6.3.0
+# pywin32==306  # Windows API (clipboard, hotkeys) - Windows専用（Macでは不要）

@@ -1,0 +1,56 @@
+{
+  "version": "1.0.0",
+  "database": {
+    "mode": "local",
+    "local": {
+      "path": "data/local.db",
+      "writable": true
+    },
+    "shared": {
+      "enabled": false,
+      "path": null,
+      "readonly": true,
+      "auto_sync": true,
+      "sync_interval": 300
+    }
+  },
+  "appearance": {
+    "position": "right",
+    "offset_x": 10,
+    "offset_y": 0,
+    "opacity_active": 0.95,
+    "opacity_inactive": 0.3,
+    "opacity_transition": 300,
+    "width": 350,
+    "width_min": 250,
+    "width_max": 800,
+    "height_min": 400,
+    "height_max": 1200,
+    "theme": "dark"
+  },
+  "hotkey": {
+    "toggle_key": "ctrl",
+    "toggle_mode": "double_tap",
+    "double_tap_threshold": 0.3,
+    "search_key": "ctrl+f",
+    "new_snippet_key": "ctrl+n",
+    "new_tag_key": "ctrl+shift+n"
+  },
+  "behavior": {
+    "auto_insert": true,
+    "auto_minimize": true,
+    "minimize_delay": 500,
+    "remember_state": true,
+    "remember_expanded": true,
+    "confirm_delete": true,
+    "backup_on_delete": true
+  },
+  "search": {
+    "fuzzy_enabled": true,
+    "fuzzy_threshold": 70,
+    "incremental": true,
+    "search_in_code": true,
+    "search_in_description": true,
+    "max_results": 50
+  }
+}
