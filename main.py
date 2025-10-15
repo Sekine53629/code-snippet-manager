@@ -65,6 +65,11 @@ class CodeSnippetApp:
             config=self.config
         )
 
+        # Set window to always stay on top
+        self.gadget_window.setWindowFlags(
+            self.gadget_window.windowFlags() | Qt.WindowType.WindowStaysOnTopHint
+        )
+
         # Initialize hotkey controller
         print("Initializing hotkey controller...")
         self.hotkey_controller = HotkeyController()
@@ -172,90 +177,115 @@ const increment = () => {
             self._apply_light_theme()
 
     def _apply_dark_theme(self):
-        """Apply dark glass theme to the application."""
+        """Apply frosted glass theme to the application (Glassmorphism)."""
+        # Glassmorphism-inspired design with translucency and blur effect
         dark_stylesheet = """
         QWidget {
-            background-color: rgba(20, 20, 20, 240);
-            color: #e8e8e8;
-            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+            background-color: rgba(28, 28, 30, 200);
+            color: #f5f5f7;
+            font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
             font-size: 13px;
         }
         QMainWindow {
-            background-color: rgba(18, 18, 18, 250);
-            border: 1px solid rgba(80, 80, 80, 150);
+            background-color: rgba(28, 28, 30, 220);
+            border: 1px solid rgba(255, 255, 255, 50);
+            border-radius: 12px;
         }
+        /* Search Bar - Frosted glass effect */
         QLineEdit {
-            background-color: rgba(30, 30, 30, 200);
-            border: 1px solid rgba(100, 100, 100, 100);
-            border-radius: 3px;
-            padding: 6px 10px;
-            color: #e8e8e8;
-            selection-background-color: rgba(100, 150, 255, 100);
+            background-color: rgba(58, 58, 60, 180);
+            border: 1px solid rgba(255, 255, 255, 30);
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: #f5f5f7;
+            selection-background-color: rgba(10, 132, 255, 120);
         }
         QLineEdit:focus {
-            border: 1px solid rgba(120, 180, 255, 150);
-            background-color: rgba(35, 35, 35, 220);
+            border: 1px solid rgba(10, 132, 255, 180);
+            background-color: rgba(58, 58, 60, 220);
         }
+        /* Buttons - Glass morphism */
         QPushButton {
-            background-color: rgba(60, 60, 60, 180);
-            color: #e8e8e8;
-            border: 1px solid rgba(100, 100, 100, 100);
-            border-radius: 3px;
-            padding: 6px 16px;
+            background-color: rgba(72, 72, 74, 150);
+            color: #f5f5f7;
+            border: 1px solid rgba(255, 255, 255, 40);
+            border-radius: 8px;
+            padding: 8px 18px;
             font-weight: 500;
         }
         QPushButton:hover {
-            background-color: rgba(80, 80, 80, 200);
-            border: 1px solid rgba(120, 120, 120, 150);
+            background-color: rgba(99, 99, 102, 180);
+            border: 1px solid rgba(255, 255, 255, 60);
         }
         QPushButton:pressed {
-            background-color: rgba(40, 40, 40, 220);
+            background-color: rgba(58, 58, 60, 200);
         }
+        /* Tree Widget - Semi-transparent with blur */
         QTreeWidget {
-            background-color: rgba(25, 25, 25, 230);
-            border: none;
+            background-color: rgba(44, 44, 46, 180);
+            border: 1px solid rgba(255, 255, 255, 20);
+            border-radius: 10px;
             outline: none;
-            color: #e8e8e8;
+            color: #f5f5f7;
+            padding: 4px;
         }
         QTreeWidget::item {
-            padding: 6px;
-            border-bottom: 1px solid rgba(50, 50, 50, 80);
+            padding: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 15);
+            border-radius: 6px;
+            margin: 2px;
         }
         QTreeWidget::item:hover {
-            background-color: rgba(50, 50, 50, 120);
+            background-color: rgba(72, 72, 74, 120);
         }
         QTreeWidget::item:selected {
-            background-color: rgba(70, 120, 200, 100);
+            background-color: rgba(10, 132, 255, 120);
             color: #ffffff;
+            border: 1px solid rgba(10, 132, 255, 80);
         }
+        /* Text Preview - Frosted dark glass */
         QTextEdit {
-            background-color: rgba(22, 22, 22, 240);
-            border: 1px solid rgba(80, 80, 80, 100);
-            color: #e8e8e8;
-            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+            background-color: rgba(28, 28, 30, 200);
+            border: 1px solid rgba(255, 255, 255, 25);
+            border-radius: 10px;
+            color: #f5f5f7;
+            font-family: 'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace;
             font-size: 13px;
-            line-height: 1.5;
-            padding: 8px;
+            line-height: 1.6;
+            padding: 12px;
         }
+        /* Labels - Subtle text */
         QLabel {
-            color: #b8b8b8;
+            color: rgba(235, 235, 245, 180);
             font-size: 12px;
+            background: transparent;
         }
+        /* Scrollbar - Minimalist glass */
         QScrollBar:vertical {
-            background-color: rgba(30, 30, 30, 150);
-            width: 10px;
+            background-color: rgba(58, 58, 60, 100);
+            width: 8px;
             border: none;
+            border-radius: 4px;
+            margin: 2px;
         }
         QScrollBar::handle:vertical {
-            background-color: rgba(100, 100, 100, 150);
-            border-radius: 5px;
-            min-height: 20px;
+            background-color: rgba(142, 142, 147, 150);
+            border-radius: 4px;
+            min-height: 30px;
         }
         QScrollBar::handle:vertical:hover {
-            background-color: rgba(130, 130, 130, 180);
+            background-color: rgba(174, 174, 178, 180);
         }
         QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
             height: 0px;
+        }
+        QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+            background: none;
+        }
+        /* Splitter - Glass divider */
+        QSplitter::handle {
+            background-color: rgba(255, 255, 255, 30);
+            width: 1px;
         }
         """
         self.app.setStyleSheet(dark_stylesheet)

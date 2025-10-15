@@ -368,7 +368,16 @@ class GadgetWindow(QMainWindow):
             # Add snippet children
             for snippet in snippets:
                 snippet_item = QTreeWidgetItem()
-                snippet_item.setText(0, f"  📄 {snippet['name']}")
+                # Display format: 📄 Name: Description
+                name = snippet['name']
+                desc = snippet.get('description', '')
+                if desc:
+                    # Truncate long descriptions
+                    desc_short = desc if len(desc) <= 40 else desc[:37] + '...'
+                    display_text = f"  📄 {name}: {desc_short}"
+                else:
+                    display_text = f"  📄 {name}"
+                snippet_item.setText(0, display_text)
                 snippet_item.setData(0, Qt.ItemDataRole.UserRole, {'type': 'snippet', 'data': snippet})
 
                 # Set snippet color (lighter)
@@ -459,7 +468,15 @@ class GadgetWindow(QMainWindow):
                 snippets = self.db_manager.get_snippets_by_tag(tag['id'])
                 for snippet in snippets:
                     snippet_item = QTreeWidgetItem()
-                    snippet_item.setText(0, f"  📄 {snippet['name']}")
+                    # Display format: 📄 Name: Description
+                    name = snippet['name']
+                    desc = snippet.get('description', '')
+                    if desc:
+                        desc_short = desc if len(desc) <= 40 else desc[:37] + '...'
+                        display_text = f"  📄 {name}: {desc_short}"
+                    else:
+                        display_text = f"  📄 {name}"
+                    snippet_item.setText(0, display_text)
                     snippet_item.setData(0, Qt.ItemDataRole.UserRole,
                                        {'type': 'snippet', 'data': snippet})
                     snippet_item.setForeground(0, QColor("#AAAAAA"))
@@ -480,7 +497,14 @@ class GadgetWindow(QMainWindow):
                 snippet_item = QTreeWidgetItem()
                 score_pct = int(score * 100)
                 lang = snippet.get('language', 'text')
-                snippet_item.setText(0, f"📄 {snippet['name']} ({lang}, {score_pct}%)")
+                name = snippet['name']
+                desc = snippet.get('description', '')
+                if desc:
+                    desc_short = desc if len(desc) <= 30 else desc[:27] + '...'
+                    display_text = f"📄 {name}: {desc_short} ({lang}, {score_pct}%)"
+                else:
+                    display_text = f"📄 {name} ({lang}, {score_pct}%)"
+                snippet_item.setText(0, display_text)
                 snippet_item.setData(0, Qt.ItemDataRole.UserRole,
                                    {'type': 'snippet', 'data': snippet})
 
