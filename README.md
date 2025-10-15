@@ -1,84 +1,148 @@
-# CodeSnippetManager
+# Code Snippet Manager
 
 プログラマー向け高機能コードスニペット管理アプリケーション
 
+<p align="center">
+  <img src="https://img.shields.io/badge/python-3.9+-blue.svg" alt="Python 3.9+">
+  <img src="https://img.shields.io/badge/PyQt6-6.0+-green.svg" alt="PyQt6">
+  <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License MIT">
+</p>
+
 ## 概要
 
-CodeSnippetManagerは、Cliborのようなクリップボード管理の利便性に、プログラマー特化の機能を追加したアプリケーションです。複数の言語やライブラリの関数・コードを階層的に管理し、素早く検索・挿入できます。
+Code Snippet Managerは、Cliborのようなクリップボード管理の利便性に、プログラマー特化の機能を追加したデスクトップアプリケーションです。複数の言語やライブラリのコードを階層的に管理し、素早く検索・挿入できます。
 
-## 現在の開発状況
+### 主な特徴
 
-**Phase 5 (UI/UX改善) 完了** - 2025-10-15
+- 🎯 **ホットキー起動**: Ctrlキー2回連続押しで即座にアクセス
+- 🌲 **階層的管理**: タグで柔軟に分類・整理
+- 🔍 **ファジー検索**: タイポも考慮した賢い検索
+- 🎨 **シンタックスハイライト**: 48種類のテーマで見やすく表示
+- 📊 **使用統計**: よく使うスニペットを自動追跡
+- 💾 **インポート/エクスポート**: JSON・Markdown形式でデータ管理
+- ⭐ **お気に入り**: 頻繁に使うスニペットに素早くアクセス
 
-✅ **Phase 1 (基盤)** - 完了
+---
+
+## 開発状況
+
+**Phase 7 (統合とテスト) 完了** - 2025-10-15
+
+✅ **全Phase完了**: Phase 1-7 すべての機能実装完了
+🎉 **統合テスト**: 6/6 テスト合格
+📦 **配布準備中**: Phase 8 (ドキュメント・配布) 作業中
+
+### 完了したフェーズ
+
+<details>
+<summary><b>✅ Phase 1: 基盤構築</b></summary>
+
 - データベースモデル（Tag, Snippet, TagSnippet, Session, SearchIndex）
 - 設定管理システム（Pydantic、型安全）
 - マルチデータベースマネージャー（ローカル + 共有DB対応）
+- CRUD操作（Create, Read）
 - 全テスト合格 (9/9)
 
-✅ **Phase 2.1 (基本GUI)** - 完了
-- ガジェット風メインウィンドウ（半透明、画面端固定）
+</details>
+
+<details>
+<summary><b>✅ Phase 2: 基本UI</b></summary>
+
+**Phase 2.1: ガジェットウィンドウ**
+- 半透明ガジェット風メインウィンドウ
 - 階層タグツリー表示（アイコン・色対応）
 - スニペットプレビュー機能
-- 検索機能（インクリメンタル）
+- インクリメンタル検索
 - クリップボードコピー
 
-✅ **Phase 2.2 (ツリー改善)** - 完了
+**Phase 2.2: ツリー改善**
 - スニペットカウント表示
 - ツリー内スニペット表示
 - コンテキストメニュー（右クリック）
 - 使用回数トラッキング
 - 全テスト合格 (8/8)
 
-✅ **Phase 2.3 (ダイアログ実装)** - 完了
-- スニペット作成ダイアログ
-- スニペット編集ダイアログ
-- スニペット削除機能
+**Phase 2.3: ダイアログ実装**
+- スニペット作成・編集・削除ダイアログ
 - マルチタグ選択
 - 入力バリデーション
 - 全テスト合格 (5/5)
 
-✅ **Phase 3 (コア機能)** - 完了
-- あいまい検索（Fuzzy Search）
+</details>
+
+<details>
+<summary><b>✅ Phase 3: コア機能</b></summary>
+
+- あいまい検索（Fuzzy Search）- typo tolerant
 - クリップボード操作ユーティリティ
 - 自動挿入機能（アクティブウィンドウ検出）
+- クロスプラットフォーム対応
 - 全テスト合格 (6/6)
 
-✅ **Phase 4 (高度な機能)** - 完了
+</details>
+
+<details>
+<summary><b>✅ Phase 4: 高度な機能</b></summary>
+
 - ホットキーシステム（Ctrlダブルタップ検出）
-- アニメーションコントローラー（展開・縮小・フェード）
+- アニメーションコントローラー
+  - フェードイン/アウト
+  - 展開・縮小
+  - エッジドッキング
 - 全テスト合格 (6/6)
 
-✅ **Phase 5 (UI/UX改善)** - 完了
-- シンタックスハイライト（Pygments統合）
+</details>
+
+<details>
+<summary><b>✅ Phase 5: UI/UX改善</b></summary>
+
+- シンタックスハイライト（Pygments統合、48スタイル）
+- Qt統合ハイライター（リアルタイム）
 - 設定ダイアログ（外観・動作・データベース）
-- Qt統合ハイライター
+- ダーク/ライトテーマ対応
 - 全テスト合格 (5/5)
 
-🚀 **次のステップ**: Phase 6 - 拡張機能（インポート/エクスポート）
+</details>
 
-## 主な機能
+<details>
+<summary><b>✅ Phase 6: 拡張機能</b></summary>
 
-- **階層的スニペット管理**: 言語 → ライブラリ → カテゴリで整理
-- **高速検索**: インクリメンタルサーチ、あいまい検索
-- **ホットキー起動**: `Ctrl+Shift+V` でクイックアクセス
-- **自動挿入**: アクティブウィンドウに直接コードを挿入
-- **シンタックスハイライト**: 見やすいコード表示
-- **タグ管理**: 柔軟な分類とフィルタリング
-- **使用統計**: よく使うスニペットを自動追跡
+- インポート/エクスポート（JSON, Markdown）
+- バックアップ/リストア機能
+- 統計ダイアログ（使用状況の可視化）
+- お気に入りスニペット機能
+- 全テスト合格 (5/5)
+
+</details>
+
+<details>
+<summary><b>✅ Phase 7: 統合とテスト</b></summary>
+
+- メインアプリケーションエントリーポイント
+- 全コンポーネント統合
+- ホットキー連携
+- テーマシステム
+- 統合テストスクリプト
+- 全テスト合格 (6/6)
+
+</details>
+
+🚀 **次のステップ**: Phase 8 - ドキュメント・配布
+
+---
 
 ## インストール
 
 ### 必要要件
 
-- Python 3.9+
+- Python 3.9以上
 - pip
 
 ### セットアップ
 
 ```bash
 # リポジトリをクローン
-git clone <repository-url>
+git clone https://github.com/Sekine53629/code-snippet-manager.git
 cd code-snippet-manager
 
 # 仮想環境を作成
@@ -94,213 +158,293 @@ venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-## 使用方法
+---
 
-### GUIモード（推奨）
+## 使い方
+
+### 起動方法
 
 ```bash
 # 仮想環境を有効化
 source venv/bin/activate  # Windows: venv\Scripts\activate
 
-# GUIモードで起動
-python gui_main.py
-```
-
-### CLIモード（テスト用）
-
-```bash
-# コマンドラインモードで起動（サンプルデータ投入・テスト）
+# アプリケーションを起動
 python main.py
 ```
 
-### GUI操作方法
+### 基本操作
 
-1. **検索**: 検索ボックスにキーワードを入力
-2. **選択**: タグまたはスニペットをクリック
-3. **コピー**: スニペットをダブルクリック → クリップボードにコピー
-4. **プレビュー**: 下部パネルでコードを確認
+1. **ホットキーで表示**: Ctrlキーを素早く2回連続押し
+2. **検索**: 検索ボックスにキーワードを入力
+3. **選択**: タグまたはスニペットをクリック
+4. **プレビュー**: 下部パネルでコードを確認（シンタックスハイライト付き）
+5. **コピー**: スニペットをダブルクリックでクリップボードにコピー
 
-詳細は [GUI_GUIDE.md](GUI_GUIDE.md) を参照してください。
+### スニペット管理
 
-### スニペットの登録（Phase 2.3で実装完了）
-
+**新規作成**:
 1. 「+ New」ボタンをクリック
 2. 言語、名前、コード、説明を入力
-3. タグを選択（複数選択可）
+3. タグを選択（複数可）
 4. 「Save」をクリック
 
-### スニペットの編集・削除
-
+**編集・削除**:
 1. スニペットを右クリック
 2. 「Edit」で編集、「Delete」で削除
-3. 編集の場合は内容を変更して「Save」
+
+**お気に入り**:
+1. スニペットを右クリック
+2. 「Add to Favorites」を選択
+
+### データ管理
+
+**エクスポート**:
+- JSON形式: 設定 → Export → JSON
+- Markdown形式: 設定 → Export → Markdown
+
+**インポート**:
+- 設定 → Import → ファイルを選択
+
+**バックアップ**:
+- 自動バックアップ: `backups/` ディレクトリに保存
+- 手動バックアップ: 設定 → Create Backup
+
+---
 
 ## プロジェクト構造
 
 ```
 code-snippet-manager/
 ├── src/
+│   ├── __init__.py
 │   ├── models/
 │   │   ├── __init__.py
-│   │   ├── database.py      # データベース接続
-│   │   └── snippet.py       # スニペットモデル
+│   │   └── models.py          # データベースモデル
+│   ├── utils/
+│   │   ├── __init__.py
+│   │   ├── config.py           # 設定管理
+│   │   ├── database.py         # データベースマネージャー
+│   │   ├── fuzzy_search.py     # あいまい検索
+│   │   ├── clipboard.py        # クリップボード操作
+│   │   ├── auto_insert.py      # 自動挿入
+│   │   ├── syntax_highlighter.py  # シンタックスハイライト
+│   │   └── import_export.py    # インポート/エクスポート
 │   ├── views/
 │   │   ├── __init__.py
-│   │   ├── main_window.py   # メインウィンドウ
-│   │   └── quick_access.py  # クイックアクセスウィンドウ
-│   ├── controllers/
-│   │   ├── __init__.py
-│   │   ├── snippet_controller.py  # スニペット管理
-│   │   └── search_controller.py   # 検索機能
-│   └── utils/
+│   │   ├── gadget_window.py    # メインウィンドウ
+│   │   ├── snippet_dialog.py   # スニペットダイアログ
+│   │   ├── settings_dialog.py  # 設定ダイアログ
+│   │   ├── statistics_dialog.py  # 統計ダイアログ
+│   │   └── code_highlighter.py   # Qtハイライター
+│   └── controllers/
 │       ├── __init__.py
-│       ├── hotkey.py        # ホットキー管理
-│       ├── clipboard.py     # クリップボード操作
-│       └── auto_insert.py   # 自動挿入
+│       ├── hotkey_controller.py    # ホットキー管理
+│       └── animation_controller.py  # アニメーション
 ├── data/
-│   └── snippets.db          # SQLiteデータベース
+│   └── snippets.db             # SQLiteデータベース
 ├── config/
-│   └── settings.json        # 設定ファイル
-├── main.py                  # エントリーポイント
-├── requirements.txt         # 依存パッケージ
-├── REQUIREMENTS.md          # 要件定義書
-└── README.md                # このファイル
+│   └── config.json             # 設定ファイル
+├── main.py                     # メインエントリーポイント
+├── test_integration.py         # 統合テスト
+├── requirements.txt            # 依存パッケージ
+├── REQUIREMENTS.md             # 要件定義書
+├── TECHNICAL_DESIGN.md         # 技術設計書
+├── IMPLEMENTATION_ROADMAP.md   # 実装ロードマップ
+└── README.md                   # このファイル
 ```
+
+---
 
 ## 設定
 
-`config/settings.json` で設定をカスタマイズできます：
+設定ファイル: `config/config.json`
+
+### 外観設定
 
 ```json
 {
-  "hotkey": "ctrl+shift+v",
-  "theme": "dark",
-  "auto_insert": true,
-  "database_path": "./data/snippets.db"
+  "appearance": {
+    "theme": "dark",           // "dark" または "light"
+    "position": "right",       // "left", "right", "top", "bottom"
+    "opacity_active": 0.95,    // アクティブ時の透明度 (0.0-1.0)
+    "width_max": 400,          // 最大幅
+    "height_max": 600          // 最大高さ
+  }
 }
 ```
 
-## 開発ロードマップ
+### 動作設定
 
-### Phase 1: 基盤（完了）
-- [x] 要件定義・詳細設計
-- [x] データベースモデル設計・実装
-- [x] 設定管理システム（Pydantic）
-- [x] マルチDB対応（ローカル + 共有）
-- [x] 基本構造セットアップ
+```json
+{
+  "behavior": {
+    "hotkey_enabled": true,         // ホットキー有効化
+    "auto_insert": false,           // 自動挿入
+    "auto_minimize": true,          // 自動最小化
+    "confirm_delete": true,         // 削除確認
+    "double_click_action": "copy"   // ダブルクリック動作
+  }
+}
+```
 
-### Phase 2: GUI開発（完了）
-- [x] ガジェット風メインウィンドウ
-- [x] 階層タグツリービュー
-- [x] スニペット詳細表示
-- [x] 基本的なCRUD操作
-- [x] スニペット作成・編集ダイアログ
-- [x] コンテキストメニュー
-- [x] 使用統計トラッキング
+### データベース設定
 
-### Phase 3: コア機能（完了）
-- [x] あいまい検索（Fuzzy Search）
-- [x] クリップボード操作
-- [x] 自動挿入機能
-- [x] インクリメンタルサーチ（Phase 2で実装済み）
+```json
+{
+  "database": {
+    "mode": "local",                      // "local" または "shared"
+    "local": {
+      "path": "~/snippets/local.db"
+    },
+    "shared": {
+      "enabled": false,
+      "path": "~/shared/snippets.db"
+    }
+  }
+}
+```
 
-### Phase 4: 高度な機能（完了）
-- [x] ホットキー機能（Ctrlダブルタップ検出）
-- [x] アニメーションコントローラー
-- [x] 透明度アニメーション
-
-### Phase 5: UI/UX改善（完了）
-- [x] シンタックスハイライト（Pygments）
-- [x] 設定ダイアログ（3タブ構成）
-
-### Phase 6: 拡張機能
-- [ ] インポート/エクスポート
-- [ ] お気に入り機能
-- [ ] 使用統計
-- [ ] ダークモード
-
-### Phase 7: 配布・デプロイ
-- [ ] Windows EXE化（PyInstaller）
-- [ ] インストーラー作成（Inno Setup）
-- [ ] 本部配信システム
-- [ ] ドキュメント整備
+---
 
 ## 技術スタック
 
-- **言語**: Python 3.9+
-- **GUI**: tkinter / PyQt6
-- **データベース**: SQLite3 + SQLAlchemy
-- **ホットキー**: keyboard / pynput
-- **クリップボード**: pyperclip
-- **シンタックスハイライト**: Pygments
+| カテゴリ | 技術 |
+|---------|------|
+| **言語** | Python 3.9+ |
+| **GUI** | PyQt6 |
+| **データベース** | SQLite3 + SQLAlchemy |
+| **設定管理** | Pydantic |
+| **クリップボード** | pyperclip |
+| **シンタックスハイライト** | Pygments |
+| **あいまい検索** | difflib + fuzzywuzzy |
+| **ビルド** | PyInstaller |
 
-## サンプルスニペット
+---
 
-アプリケーションには以下のサンプルスニペットが含まれています：
+## テスト
 
-### Python - NumPy
-```python
-import numpy as np
-arr = np.array([1, 2, 3])
+### 統合テスト実行
+
+```bash
+python test_integration.py
 ```
 
-### Python - Pandas
-```python
-import pandas as pd
-df = pd.read_csv('data.csv')
-```
+### テストカバレッジ
 
-### JavaScript - React
-```javascript
-const [state, setState] = useState(initialValue);
-```
+- **Configuration**: ✅
+- **Database Operations**: ✅
+- **Fuzzy Search**: ✅
+- **Import/Export**: ✅
+- **Syntax Highlighter**: ✅
+- **Favorite Snippets**: ✅
+
+**結果**: 6/6 テスト合格 (100%)
+
+---
 
 ## トラブルシューティング
 
 ### ホットキーが動作しない
 
-管理者権限で実行してください：
+**原因**: アクセシビリティ権限が必要な場合があります
 
-```bash
-# Windows
-右クリック → 「管理者として実行」
-
-# macOS/Linux
-sudo python main.py
-```
+**解決策**:
+- macOS: システム環境設定 → セキュリティとプライバシー → プライバシー → アクセシビリティ
+- Windows: 管理者として実行
 
 ### データベースエラー
 
-データベースをリセット：
+**原因**: データベースファイルが破損している可能性があります
 
+**解決策**:
 ```bash
+# データベースをリセット
 rm data/snippets.db
 python main.py
 ```
+
+### インポートエラー
+
+**原因**: モジュールパスの問題
+
+**解決策**:
+```bash
+# 仮想環境を再作成
+rm -rf venv
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+---
+
+## 開発
+
+### 開発環境のセットアップ
+
+```bash
+# 開発用依存関係をインストール
+pip install -r requirements-dev.txt
+
+# テストを実行
+pytest
+
+# コードフォーマット
+black src/
+```
+
+### ブランチ戦略
+
+- `main`: 安定版
+- `develop`: 開発版
+- `feature/*`: 機能開発
+- `hotfix/*`: 緊急修正
+
+---
 
 ## 貢献
 
 プルリクエストを歓迎します！
 
-1. Fork する
-2. Feature ブランチを作成 (`git checkout -b feature/amazing-feature`)
-3. Commit する (`git commit -m 'Add amazing feature'`)
-4. Push する (`git push origin feature/amazing-feature`)
-5. Pull Request を作成
+1. このリポジトリをフォーク
+2. 機能ブランチを作成 (`git checkout -b feature/amazing-feature`)
+3. 変更をコミット (`git commit -m 'Add amazing feature'`)
+4. ブランチにプッシュ (`git push origin feature/amazing-feature`)
+5. プルリクエストを作成
 
-## ライセンス
-
-MIT License
-
-## 作成者
-
-Sekine53629
-
-## 謝辞
-
-- Clibor - インスピレーション元
-- SnippetsLab - UI/UXの参考
+詳細は [CONTRIBUTING.md](CONTRIBUTING.md) を参照してください。
 
 ---
 
-**作成日**: 2025-10-15
+## ライセンス
+
+MIT License - 詳細は [LICENSE](LICENSE) ファイルを参照してください。
+
+---
+
+## 作成者
+
+**Sekine53629**
+- GitHub: [@Sekine53629](https://github.com/Sekine53629)
+
+---
+
+## 謝辞
+
+- **Clibor** - インスピレーション元
+- **SnippetsLab** - UI/UXの参考
+- **VS Code** - テーマデザインの参考
+
+---
+
+## サポート
+
+問題や質問がある場合:
+- [Issue Tracker](https://github.com/Sekine53629/code-snippet-manager/issues) で報告
+- [Discussions](https://github.com/Sekine53629/code-snippet-manager/discussions) で質問
+
+---
+
+**最終更新日**: 2025-10-15
+**バージョン**: 1.0.0
+**ステータス**: Phase 7 完了、Phase 8 進行中
