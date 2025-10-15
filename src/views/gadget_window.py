@@ -6,7 +6,7 @@ This module implements a semi-transparent, edge-docked window with smooth animat
 from PyQt6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QTreeWidget, QTreeWidgetItem, QTextEdit, QLineEdit,
-    QPushButton, QLabel, QSplitter, QMenu
+    QPushButton, QLabel, QSplitter, QMenu, QMessageBox
 )
 from PyQt6.QtCore import Qt, QTimer, QPropertyAnimation, QEasingCurve, QRect, pyqtSignal
 from PyQt6.QtGui import QPalette, QColor, QFont, QAction
@@ -20,6 +20,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from src.utils.config import Config
 from src.utils.database import DatabaseManager
+from src.views.snippet_dialog import SnippetDialog
 
 
 class GadgetWindow(QMainWindow):
@@ -275,6 +276,7 @@ class GadgetWindow(QMainWindow):
 
         # Action buttons
         btn_new = QPushButton("+ New")
+        btn_new.clicked.connect(self._create_new_snippet)
         btn_new.setStyleSheet("""
             QPushButton {
                 background-color: #1976D2;
@@ -551,36 +553,132 @@ class GadgetWindow(QMainWindow):
         self.status_label.setText(f"✓ Copied '{snippet['name']}' to clipboard!")
 
     def _edit_snippet(self, snippet):
-        """Edit snippet (placeholder).
+        """Edit snippet with dialog.
 
         Args:
             snippet: Snippet data dictionary.
         """
-        self.status_label.setText(f"Edit snippet: {snippet['name']} (Not implemented yet)")
+        # Get all tags for selection
+        tags = self.db_manager.get_all_tags()
+
+        # Open edit dialog
+        dialog = SnippetDialog(self, snippet=snippet, all_tags=tags)
+        dialog.snippet_saved.connect(self._on_snippet_updated)
+
+        if dialog.exec():
+            self.status_label.setText(f"✓ Updated '{snippet['name']}'")
+        else:
+            self.status_label.setText("Edit cancelled")
 
     def _delete_snippet(self, snippet):
-        """Delete snippet (placeholder).
+        """Delete snippet with confirmation.
 
         Args:
             snippet: Snippet data dictionary.
         """
-        self.status_label.setText(f"Delete snippet: {snippet['name']} (Not implemented yet)")
+        # Confirm deletion
+        reply = QMessageBox.question(
+            self,
+            "Delete Snippet",
+            f"Are you sure you want to delete '{snippet['name']}'?",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No
+        )
+
+        if reply == QMessageBox.StandardButton.Yes:
+            # Delete from database
+            success = self.db_manager.delete_snippet(snippet['id'])
+
+            if success:
+                self.status_label.setText(f"✓ Deleted '{snippet['name']}'")
+                self._load_data()  # Reload tree
+            else:
+                self.status_label.setText(f"✗ Failed to delete '{snippet['name']}'")
 
     def _add_snippet_to_tag(self, tag):
-        """Add snippet to tag (placeholder).
+        """Add new snippet to tag.
 
         Args:
             tag: Tag data dictionary.
         """
-        self.status_label.setText(f"Add snippet to '{tag['name']}' (Not implemented yet)")
+        # Get all tags for selection
+        tags = self.db_manager.get_all_tags()
+
+        # Open new snippet dialog
+        dialog = SnippetDialog(self, snippet=None, all_tags=tags)
+
+        # Pre-select this tag
+        if tag['id'] in dialog.tag_items:
+            item = dialog.tag_items[tag['id']]
+            item.setCheckState(0, Qt.CheckState.Checked)
+            dialog.selected_tag_ids.append(tag['id'])
+
+        dialog.snippet_saved.connect(self._on_snippet_created)
+
+        if dialog.exec():
+            self.status_label.setText(f"✓ Snippet added to '{tag['name']}'")
+        else:
+            self.status_label.setText("Cancelled")
 
     def _edit_tag(self, tag):
-        """Edit tag (placeholder).
+        """Edit tag (placeholder - for future implementation).
 
         Args:
             tag: Tag data dictionary.
         """
         self.status_label.setText(f"Edit tag: {tag['name']} (Not implemented yet)")
+
+    def _create_new_snippet(self):
+        """Create a new snippet (from + New button)."""
+        # Get all tags for selection
+        tags = self.db_manager.get_all_tags()
+
+        # Open new snippet dialog
+        dialog = SnippetDialog(self, snippet=None, all_tags=tags)
+        dialog.snippet_saved.connect(self._on_snippet_created)
+
+        if dialog.exec():
+            self.status_label.setText("✓ Snippet created")
+        else:
+            self.status_label.setText("Cancelled")
+
+    def _on_snippet_created(self, snippet_data):
+        """Handle new snippet creation.
+
+        Args:
+            snippet_data: New snippet data from dialog.
+        """
+        # Add to database
+        self.db_manager.add_snippet(
+            name=snippet_data['name'],
+            code=snippet_data['code'],
+            language=snippet_data.get('language'),
+            description=snippet_data.get('description'),
+            tag_ids=snippet_data.get('tag_ids', [])
+        )
+
+        # Reload tree
+        self._load_data()
+
+    def _on_snippet_updated(self, snippet_data):
+        """Handle snippet update.
+
+        Args:
+            snippet_data: Updated snippet data from dialog.
+        """
+        # Update in database
+        self.db_manager.update_snippet(
+            snippet_data['id'],
+            name=snippet_data['name'],
+            code=snippet_data['code'],
+            language=snippet_data.get('language'),
+            description=snippet_data.get('description')
+        )
+
+        # TODO: Update tag associations
+
+        # Reload tree
+        self._load_data()
 
     def toggle_visibility(self):
         """Toggle window visibility with animation."""
