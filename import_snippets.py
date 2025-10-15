@@ -80,14 +80,21 @@ def import_snippets_from_json(db_manager: DatabaseManager, input_file: str, merg
         parent_id = tag_data.get('parent_id')
         tag_type = tag_data.get('type', 'folder')
 
-        # Create or get tag
+        # Create or get tag (without icon and color parameters)
         new_id = db_manager.get_or_create_tag(
             name=name,
             parent_id=None,  # Will update parent later
-            tag_type=tag_type,
-            icon=icon,
-            color=color
+            tag_type=tag_type
         )
+
+        # Update icon and color separately
+        with db_manager.get_local_session() as session:
+            from models.models import Tag
+            tag = session.query(Tag).filter(Tag.id == new_id).first()
+            if tag:
+                tag.icon = icon
+                tag.color = color
+                session.commit()
 
         tag_id_mapping[old_id] = new_id
         print(f"   ✓ {icon} {name} (ID: {old_id} -> {new_id})")
