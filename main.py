@@ -178,52 +178,52 @@ const increment = () => {
 
     def _apply_dark_theme(self):
         """Apply frosted glass theme to the application (Glassmorphism)."""
-        # Glassmorphism-inspired design with high translucency and rounded corners
+        # Glassmorphism-inspired design with very high translucency and rounded corners
         dark_stylesheet = """
         QWidget {
-            background-color: rgba(28, 28, 30, 140);
+            background-color: rgba(28, 28, 30, 80);
             color: #f5f5f7;
             font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
             font-size: 13px;
         }
         QMainWindow {
-            background-color: rgba(28, 28, 30, 150);
-            border: 1px solid rgba(255, 255, 255, 40);
+            background-color: rgba(28, 28, 30, 90);
+            border: 1px solid rgba(255, 255, 255, 35);
             border-radius: 20px;
         }
         /* Search Bar - Frosted glass effect */
         QLineEdit {
-            background-color: rgba(58, 58, 60, 120);
-            border: 1px solid rgba(255, 255, 255, 25);
+            background-color: rgba(58, 58, 60, 70);
+            border: 1px solid rgba(255, 255, 255, 20);
             border-radius: 14px;
             padding: 10px 16px;
             color: #f5f5f7;
-            selection-background-color: rgba(10, 132, 255, 100);
+            selection-background-color: rgba(10, 132, 255, 80);
         }
         QLineEdit:focus {
-            border: 1px solid rgba(10, 132, 255, 150);
-            background-color: rgba(58, 58, 60, 160);
+            border: 1px solid rgba(10, 132, 255, 120);
+            background-color: rgba(58, 58, 60, 100);
         }
         /* Buttons - Glass morphism */
         QPushButton {
-            background-color: rgba(72, 72, 74, 120);
+            background-color: rgba(72, 72, 74, 80);
             color: #f5f5f7;
-            border: 1px solid rgba(255, 255, 255, 35);
+            border: 1px solid rgba(255, 255, 255, 30);
             border-radius: 14px;
             padding: 10px 20px;
             font-weight: 500;
         }
         QPushButton:hover {
-            background-color: rgba(99, 99, 102, 150);
-            border: 1px solid rgba(255, 255, 255, 55);
+            background-color: rgba(99, 99, 102, 110);
+            border: 1px solid rgba(255, 255, 255, 50);
         }
         QPushButton:pressed {
-            background-color: rgba(58, 58, 60, 170);
+            background-color: rgba(58, 58, 60, 130);
         }
         /* Tree Widget - Semi-transparent with blur */
         QTreeWidget {
-            background-color: rgba(44, 44, 46, 120);
-            border: 1px solid rgba(255, 255, 255, 18);
+            background-color: rgba(44, 44, 46, 70);
+            border: 1px solid rgba(255, 255, 255, 15);
             border-radius: 16px;
             outline: none;
             color: #f5f5f7;
@@ -231,22 +231,22 @@ const increment = () => {
         }
         QTreeWidget::item {
             padding: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 12);
+            border-bottom: 1px solid rgba(255, 255, 255, 10);
             border-radius: 10px;
             margin: 3px;
         }
         QTreeWidget::item:hover {
-            background-color: rgba(72, 72, 74, 100);
+            background-color: rgba(72, 72, 74, 70);
         }
         QTreeWidget::item:selected {
-            background-color: rgba(10, 132, 255, 100);
+            background-color: rgba(10, 132, 255, 80);
             color: #ffffff;
-            border: 1px solid rgba(10, 132, 255, 70);
+            border: 1px solid rgba(10, 132, 255, 60);
         }
         /* Text Preview - Frosted dark glass */
         QTextEdit {
-            background-color: rgba(28, 28, 30, 130);
-            border: 1px solid rgba(255, 255, 255, 22);
+            background-color: rgba(28, 28, 30, 75);
+            border: 1px solid rgba(255, 255, 255, 18);
             border-radius: 16px;
             color: #f5f5f7;
             font-family: 'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace;
@@ -256,25 +256,25 @@ const increment = () => {
         }
         /* Labels - Subtle text */
         QLabel {
-            color: rgba(235, 235, 245, 160);
+            color: rgba(235, 235, 245, 150);
             font-size: 12px;
             background: transparent;
         }
         /* Scrollbar - Minimalist glass */
         QScrollBar:vertical {
-            background-color: rgba(58, 58, 60, 80);
+            background-color: rgba(58, 58, 60, 50);
             width: 10px;
             border: none;
             border-radius: 5px;
             margin: 3px;
         }
         QScrollBar::handle:vertical {
-            background-color: rgba(142, 142, 147, 130);
+            background-color: rgba(142, 142, 147, 100);
             border-radius: 5px;
             min-height: 30px;
         }
         QScrollBar::handle:vertical:hover {
-            background-color: rgba(174, 174, 178, 160);
+            background-color: rgba(174, 174, 178, 130);
         }
         QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
             height: 0px;
@@ -284,7 +284,7 @@ const increment = () => {
         }
         /* Splitter - Glass divider */
         QSplitter::handle {
-            background-color: rgba(255, 255, 255, 25);
+            background-color: rgba(255, 255, 255, 20);
             width: 1px;
         }
         """

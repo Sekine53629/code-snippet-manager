@@ -60,6 +60,7 @@ class GadgetWindow(QMainWindow):
         self._setup_window()
         self._setup_ui()
         self._setup_animations()
+        self._apply_rounded_mask()
         self._load_data()
 
     def _setup_window(self):
@@ -107,9 +108,17 @@ class GadgetWindow(QMainWindow):
         central = QWidget()
         self.setCentralWidget(central)
 
+        # Apply rounded corners to central widget for rounded window effect
+        central.setStyleSheet("""
+            QWidget {
+                background-color: transparent;
+                border-radius: 20px;
+            }
+        """)
+
         # Main layout
         layout = QVBoxLayout(central)
-        layout.setContentsMargins(10, 10, 10, 10)
+        layout.setContentsMargins(12, 12, 12, 12)
         layout.setSpacing(5)
 
         # Header
@@ -314,6 +323,23 @@ class GadgetWindow(QMainWindow):
         else:
             # Light theme (future implementation)
             pass
+
+    def _apply_rounded_mask(self):
+        """Apply rounded corners mask to window."""
+        from PyQt6.QtGui import QPainterPath, QRegion
+
+        # Create a rounded rectangle path
+        path = QPainterPath()
+        path.addRoundedRect(0, 0, self.width(), self.height(), 20, 20)
+
+        # Create region from path and set as mask
+        region = QRegion(path.toFillPolygon().toPolygon())
+        self.setMask(region)
+
+    def resizeEvent(self, event):
+        """Handle window resize events to reapply rounded mask."""
+        super().resizeEvent(event)
+        self._apply_rounded_mask()
 
     def _setup_animations(self):
         """Setup animation effects."""
