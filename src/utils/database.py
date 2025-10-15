@@ -9,8 +9,8 @@ from sqlalchemy import create_engine, event, text
 from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.pool import StaticPool
 
-from ..models.models import Base, Tag, Snippet, TagSnippet, Session as UserSession, SearchIndex
-from .config import Config, expand_path
+from models.models import Base, Tag, Snippet, TagSnippet, Session as UserSession, SearchIndex
+from utils.config import Config, expand_path
 
 
 class DatabaseManager:
