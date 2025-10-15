@@ -6,10 +6,10 @@ This module implements a semi-transparent, edge-docked window with smooth animat
 from PyQt6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QTreeWidget, QTreeWidgetItem, QTextEdit, QLineEdit,
-    QPushButton, QLabel, QSplitter
+    QPushButton, QLabel, QSplitter, QMenu
 )
 from PyQt6.QtCore import Qt, QTimer, QPropertyAnimation, QEasingCurve, QRect, pyqtSignal
-from PyQt6.QtGui import QPalette, QColor, QFont
+from PyQt6.QtGui import QPalette, QColor, QFont, QAction
 
 from typing import Optional
 import sys
@@ -214,6 +214,8 @@ class GadgetWindow(QMainWindow):
         self.tree.setHeaderHidden(True)
         self.tree.itemClicked.connect(self._on_item_clicked)
         self.tree.itemDoubleClicked.connect(self._on_item_double_clicked)
+        self.tree.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.tree.customContextMenuRequested.connect(self._show_context_menu)
         self.tree.setStyleSheet("""
             QTreeWidget {
                 background-color: #1E1E1E;
@@ -325,7 +327,7 @@ class GadgetWindow(QMainWindow):
         self.status_label.setText(f"{len(tags)} tags loaded")
 
     def _build_tree(self, tags):
-        """Build tree widget from tag data.
+        """Build tree widget from tag data with snippets.
 
         Args:
             tags: List of tag dictionaries.
@@ -334,22 +336,48 @@ class GadgetWindow(QMainWindow):
         tag_items = {}
         root_items = []
 
-        # First pass: create all items
+        # First pass: create tag items
         for tag in tags:
+            # Get snippets for this tag
+            snippets = self.db_manager.get_snippets_by_tag(tag['id'])
+            snippet_count = len(snippets)
+
+            # Create tag item with snippet count
             item = QTreeWidgetItem()
-            item.setText(0, f"{tag['icon']} {tag['name']}")
-            item.setData(0, Qt.ItemDataRole.UserRole, tag)  # Store tag data
+            if snippet_count > 0:
+                item.setText(0, f"{tag['icon']} {tag['name']} ({snippet_count})")
+            else:
+                item.setText(0, f"{tag['icon']} {tag['name']}")
+
+            # Store tag data
+            item.setData(0, Qt.ItemDataRole.UserRole, {'type': 'tag', 'data': tag})
 
             # Set color
             color = QColor(tag['color'])
             item.setForeground(0, color)
+
+            # Add snippet children
+            for snippet in snippets:
+                snippet_item = QTreeWidgetItem()
+                snippet_item.setText(0, f"  📄 {snippet['name']}")
+                snippet_item.setData(0, Qt.ItemDataRole.UserRole, {'type': 'snippet', 'data': snippet})
+
+                # Set snippet color (lighter)
+                snippet_color = QColor("#AAAAAA")
+                snippet_item.setForeground(0, snippet_color)
+
+                # Add usage count tooltip
+                if snippet['usage_count'] > 0:
+                    snippet_item.setToolTip(0, f"Used {snippet['usage_count']} times")
+
+                item.addChild(snippet_item)
 
             tag_items[tag['id']] = item
 
             if tag['parent_id'] is None:
                 root_items.append(item)
 
-        # Second pass: build hierarchy
+        # Second pass: build tag hierarchy
         for tag in tags:
             if tag['parent_id'] is not None and tag['parent_id'] in tag_items:
                 parent_item = tag_items[tag['parent_id']]
@@ -382,19 +410,30 @@ class GadgetWindow(QMainWindow):
             item: Clicked tree item.
             column: Column index.
         """
-        tag_data = item.data(0, Qt.ItemDataRole.UserRole)
+        item_data = item.data(0, Qt.ItemDataRole.UserRole)
 
-        if tag_data:
-            # Load snippets for this tag
-            snippets = self.db_manager.get_snippets_by_tag(tag_data['id'])
+        if not item_data:
+            return
 
+        if item_data['type'] == 'snippet':
+            # Show snippet preview
+            snippet = item_data['data']
+            self.preview.setPlainText(snippet['code'])
+            lang = snippet['language'] or 'text'
+            self.status_label.setText(f"{snippet['name']} ({lang})")
+        elif item_data['type'] == 'tag':
+            # Show tag info
+            tag = item_data['data']
+            snippets = self.db_manager.get_snippets_by_tag(tag['id'])
             if snippets:
                 # Show first snippet
                 snippet = snippets[0]
                 self.preview.setPlainText(snippet['code'])
-                self.status_label.setText(f"{snippet['name']} ({snippet['language']})")
+                lang = snippet['language'] or 'text'
+                self.status_label.setText(f"{tag['name']}: {snippet['name']} ({lang})")
             else:
-                self.preview.setPlainText(f"No snippets in '{tag_data['name']}'")
+                self.preview.setPlainText(f"No snippets in '{tag['name']}'")
+                self.status_label.setText(f"{tag['name']} (empty)")
 
     def _on_item_double_clicked(self, item: QTreeWidgetItem, column: int):
         """Handle tree item double click (copy to clipboard).
@@ -403,16 +442,145 @@ class GadgetWindow(QMainWindow):
             item: Double-clicked tree item.
             column: Column index.
         """
-        tag_data = item.data(0, Qt.ItemDataRole.UserRole)
+        item_data = item.data(0, Qt.ItemDataRole.UserRole)
 
-        if tag_data:
-            snippets = self.db_manager.get_snippets_by_tag(tag_data['id'])
+        if not item_data:
+            return
+
+        from PyQt6.QtWidgets import QApplication
+        clipboard = QApplication.clipboard()
+
+        if item_data['type'] == 'snippet':
+            # Copy snippet code
+            snippet = item_data['data']
+            clipboard.setText(snippet['code'])
+            self.status_label.setText(f"✓ Copied '{snippet['name']}' to clipboard!")
+
+            # Update usage count
+            with self.db_manager.get_local_session() as session:
+                from src.models.models import Snippet
+                db_snippet = session.query(Snippet).filter(Snippet.id == snippet['id']).first()
+                if db_snippet:
+                    db_snippet.increment_usage()
+                    session.commit()
+
+        elif item_data['type'] == 'tag':
+            # Copy first snippet in tag
+            tag = item_data['data']
+            snippets = self.db_manager.get_snippets_by_tag(tag['id'])
             if snippets:
-                # Copy first snippet to clipboard
-                from PyQt6.QtWidgets import QApplication
-                clipboard = QApplication.clipboard()
                 clipboard.setText(snippets[0]['code'])
-                self.status_label.setText("✓ Copied to clipboard!")
+                self.status_label.setText(f"✓ Copied '{snippets[0]['name']}' to clipboard!")
+
+    def _show_context_menu(self, position):
+        """Show context menu for tree items.
+
+        Args:
+            position: Menu position.
+        """
+        item = self.tree.itemAt(position)
+        if not item:
+            return
+
+        item_data = item.data(0, Qt.ItemDataRole.UserRole)
+        if not item_data:
+            return
+
+        menu = QMenu(self)
+        menu.setStyleSheet("""
+            QMenu {
+                background-color: #2E2E2E;
+                color: white;
+                border: 1px solid #444444;
+                padding: 5px;
+            }
+            QMenu::item {
+                padding: 5px 20px;
+            }
+            QMenu::item:selected {
+                background-color: #0D47A1;
+            }
+        """)
+
+        if item_data['type'] == 'snippet':
+            snippet = item_data['data']
+
+            # Copy action
+            copy_action = QAction("📋 Copy to Clipboard", self)
+            copy_action.triggered.connect(lambda: self._copy_snippet(snippet))
+            menu.addAction(copy_action)
+
+            # Edit action (placeholder)
+            edit_action = QAction("✏️ Edit Snippet", self)
+            edit_action.triggered.connect(lambda: self._edit_snippet(snippet))
+            menu.addAction(edit_action)
+
+            menu.addSeparator()
+
+            # Delete action (placeholder)
+            delete_action = QAction("🗑️ Delete Snippet", self)
+            delete_action.triggered.connect(lambda: self._delete_snippet(snippet))
+            menu.addAction(delete_action)
+
+        elif item_data['type'] == 'tag':
+            tag = item_data['data']
+
+            # Add snippet action (placeholder)
+            add_action = QAction("➕ Add Snippet", self)
+            add_action.triggered.connect(lambda: self._add_snippet_to_tag(tag))
+            menu.addAction(add_action)
+
+            menu.addSeparator()
+
+            # Edit tag action (placeholder)
+            edit_tag_action = QAction("✏️ Edit Tag", self)
+            edit_tag_action.triggered.connect(lambda: self._edit_tag(tag))
+            menu.addAction(edit_tag_action)
+
+        menu.exec(self.tree.viewport().mapToGlobal(position))
+
+    def _copy_snippet(self, snippet):
+        """Copy snippet to clipboard.
+
+        Args:
+            snippet: Snippet data dictionary.
+        """
+        from PyQt6.QtWidgets import QApplication
+        clipboard = QApplication.clipboard()
+        clipboard.setText(snippet['code'])
+        self.status_label.setText(f"✓ Copied '{snippet['name']}' to clipboard!")
+
+    def _edit_snippet(self, snippet):
+        """Edit snippet (placeholder).
+
+        Args:
+            snippet: Snippet data dictionary.
+        """
+        self.status_label.setText(f"Edit snippet: {snippet['name']} (Not implemented yet)")
+
+    def _delete_snippet(self, snippet):
+        """Delete snippet (placeholder).
+
+        Args:
+            snippet: Snippet data dictionary.
+        """
+        self.status_label.setText(f"Delete snippet: {snippet['name']} (Not implemented yet)")
+
+    def _add_snippet_to_tag(self, tag):
+        """Add snippet to tag (placeholder).
+
+        Args:
+            tag: Tag data dictionary.
+        """
+        self.status_label.setText(f"Add snippet to '{tag['name']}' (Not implemented yet)")
+
+    def _edit_tag(self, tag):
+        """Edit tag (placeholder).
+
+        Args:
+            tag: Tag data dictionary.
+        """
+        self.status_label.setText(f"Edit tag: {tag['name']} (Not implemented yet)")
 
     def toggle_visibility(self):
         """Toggle window visibility with animation."""
