@@ -1,0 +1,408 @@
+{
+  "metadata": {
+    "exported_at": "2025-10-16T06:33:52.038718",
+    "version": "1.0",
+    "total_tags": 6,
+    "total_snippets": 29
+  },
+  "tags": [
+    {
+      "id": 6,
+      "name": "Django",
+      "icon": "📁",
+      "color": "#64B5F6",
+      "parent_id": null,
+      "type": "folder"
+    },
+    {
+      "id": 2,
+      "name": "Matplotlib",
+      "icon": "📁",
+      "color": "#64B5F6",
+      "parent_id": null,
+      "type": "folder"
+    },
+    {
+      "id": 1,
+      "name": "NumPy",
+      "icon": "📁",
+      "color": "#64B5F6",
+      "parent_id": null,
+      "type": "folder"
+    },
+    {
+      "id": 3,
+      "name": "Pandas",
+      "icon": "📁",
+      "color": "#64B5F6",
+      "parent_id": null,
+      "type": "folder"
+    },
+    {
+      "id": 5,
+      "name": "TensorFlow/Keras",
+      "icon": "📁",
+      "color": "#64B5F6",
+      "parent_id": null,
+      "type": "folder"
+    },
+    {
+      "id": 4,
+      "name": "scikit-learn",
+      "icon": "📁",
+      "color": "#64B5F6",
+      "parent_id": null,
+      "type": "folder"
+    }
+  ],
+  "snippets": [
+    {
+      "name": "Array Creation",
+      "code": "import numpy as np\n\n# Create arrays\narr1 = np.array([1, 2, 3, 4, 5])\narr2 = np.zeros((3, 4))\narr3 = np.ones((2, 3))\narr4 = np.arange(0, 10, 2)\narr5 = np.linspace(0, 1, 5)",
+      "language": "python",
+      "description": "NumPy配列を作成する様々な方法",
+      "tag_ids": [
+        1
+      ],
+      "usage_count": 0,
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "name": "Array Indexing and Slicing",
+      "code": "import numpy as np\n\narr = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])\n\n# Indexing\nprint(arr[0, 1])      # 2\nprint(arr[1])         # [4, 5, 6]\n\n# Slicing\nprint(arr[:2, 1:])    # [[2, 3], [5, 6]]\nprint(arr[::2, ::2])  # [[1, 3], [7, 9]]\n\n# Boolean indexing\nprint(arr[arr > 5])   # [6, 7, 8, 9]",
+      "language": "python",
+      "description": "NumPy配列のインデックス参照とスライス技法",
+      "tag_ids": [
+        1
+      ],
+      "usage_count": 0,
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "name": "Array Operations",
+      "code": "import numpy as np\n\narr = np.array([[1, 2, 3], [4, 5, 6]])\n\n# Basic operations\nprint(arr.shape)      # (2, 3)\nprint(arr.ndim)       # 2\nprint(arr.dtype)      # int64\nprint(arr.sum())      # 21\nprint(arr.mean())     # 3.5\nprint(arr.max())      # 6",
+      "language": "python",
+      "description": "NumPy配列の基本的な操作とプロパティ",
+      "tag_ids": [
+        1
+      ],
+      "usage_count": 0,
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "name": "Bar Chart",
+      "code": "import matplotlib.pyplot as plt\n\ncategories = ['A', 'B', 'C', 'D', 'E']\nvalues = [23, 45, 56, 78, 32]\n\nplt.figure(figsize=(10, 6))\nplt.bar(categories, values, color='skyblue', edgecolor='navy')\nplt.xlabel('Category')\nplt.ylabel('Value')\nplt.title('Bar Chart Example')\nplt.grid(axis='y', alpha=0.3)\nplt.show()",
+      "language": "python",
+      "description": "棒グラフを作成",
+      "tag_ids": [
+        2
+      ],
+      "usage_count": 0,
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "name": "Basic Line Plot",
+      "code": "import matplotlib.pyplot as plt\nimport numpy as np\n\nx = np.linspace(0, 10, 100)\ny = np.sin(x)\n\nplt.figure(figsize=(10, 6))\nplt.plot(x, y, label='sin(x)')\nplt.xlabel('X axis')\nplt.ylabel('Y axis')\nplt.title('Sine Wave')\nplt.legend()\nplt.grid(True)\nplt.show()",
+      "language": "python",
+      "description": "Matplotlibで基本的な折れ線グラフを作成",
+      "tag_ids": [
+        2
+      ],
+      "usage_count": 0,
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "name": "CNN for Image Classification",
+      "code": "from tensorflow import keras\nfrom tensorflow.keras import layers\n\nmodel = keras.Sequential([\n    layers.Conv2D(32, (3, 3), activation='relu', input_shape=(28, 28, 1)),\n    layers.MaxPooling2D((2, 2)),\n    layers.Conv2D(64, (3, 3), activation='relu'),\n    layers.MaxPooling2D((2, 2)),\n    layers.Conv2D(64, (3, 3), activation='relu'),\n    layers.Flatten(),\n    layers.Dense(64, activation='relu'),\n    layers.Dense(10, activation='softmax')\n])\n\nmodel.compile(\n    optimizer='adam',\n    loss='sparse_categorical_crossentropy',\n    metrics=['accuracy']\n)",
+      "language": "python",
+      "description": "画像分類用CNNモデルを作成",
+      "tag_ids": [
+        5
+      ],
+      "usage_count": 0,
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "name": "Class-Based View",
+      "code": "from django.views.generic import ListView, DetailView, CreateView\nfrom django.urls import reverse_lazy\n\nclass ArticleListView(ListView):\n    model = Article\n    template_name = 'articles/list.html'\n    context_object_name = 'articles'\n    paginate_by = 10\n\n    def get_queryset(self):\n        return Article.objects.filter(published=True)\n\nclass ArticleDetailView(DetailView):\n    model = Article\n    template_name = 'articles/detail.html'\n\nclass ArticleCreateView(CreateView):\n    model = Article\n    fields = ['title', 'content', 'published']\n    success_url = reverse_lazy('article-list')",
+      "language": "python",
+      "description": "Djangoのクラスベースビュー (CBV)",
+      "tag_ids": [
+        6
+      ],
+      "usage_count": 1,
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "name": "Cross-Validation",
+      "code": "from sklearn.model_selection import cross_val_score\nfrom sklearn.ensemble import RandomForestClassifier\n\nmodel = RandomForestClassifier(n_estimators=100, random_state=42)\n\n# Perform 5-fold cross-validation\nscores = cross_val_score(\n    model, X, y,\n    cv=5,                    # 5 folds\n    scoring='accuracy'       # Metric\n)\n\nprint(f\"CV Scores: {scores}\")\nprint(f\"Mean: {scores.mean():.4f}\")\nprint(f\"Std: {scores.std():.4f}\")",
+      "language": "python",
+      "description": "交差検証を実行",
+      "tag_ids": [
+        4
+      ],
+      "usage_count": 1,
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "name": "Data Cleaning",
+      "code": "import pandas as pd\n\n# Handle missing values\ndf.dropna()                    # Drop rows with NaN\ndf.fillna(0)                   # Fill NaN with 0\ndf.fillna(df.mean())          # Fill with mean\n\n# Remove duplicates\ndf.drop_duplicates()\n\n# Rename columns\ndf.rename(columns={'old_name': 'new_name'})\n\n# Change data types\ndf['column'] = df['column'].astype('int')\n\n# Replace values\ndf['column'].replace({'old': 'new'})",
+      "language": "python",
+      "description": "DataFrameのデータをクリーニング・整形",
+      "tag_ids": [
+        3
+      ],
+      "usage_count": 0,
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "name": "Data Inspection",
+      "code": "import pandas as pd\n\n# Basic info\nprint(df.shape)           # (rows, columns)\nprint(df.info())          # Data types and non-null counts\nprint(df.describe())      # Statistical summary\nprint(df.head(10))        # First 10 rows\nprint(df.tail(10))        # Last 10 rows\n\n# Column info\nprint(df.columns)         # Column names\nprint(df.dtypes)          # Data types\nprint(df.isnull().sum())  # Missing values per column",
+      "language": "python",
+      "description": "DataFrameの構造と内容を検査",
+      "tag_ids": [
+        3
+      ],
+      "usage_count": 0,
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "name": "Data Selection",
+      "code": "import pandas as pd\n\n# Select columns\ndf['column_name']\ndf[['col1', 'col2']]\n\n# Select rows by index\ndf.iloc[0]           # First row\ndf.iloc[0:5]         # First 5 rows\ndf.iloc[:, 0:3]      # First 3 columns\n\n# Select by label\ndf.loc[0, 'column_name']\ndf.loc[:, ['col1', 'col2']]\n\n# Conditional selection\ndf[df['age'] > 30]\ndf[(df['age'] > 25) & (df['city'] == 'Tokyo')]",
+      "language": "python",
+      "description": "DataFrameのデータを選択・フィルタリング",
+      "tag_ids": [
+        3
+      ],
+      "usage_count": 0,
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "name": "DataFrame Creation",
+      "code": "import pandas as pd\n\n# From dictionary\ndf = pd.DataFrame({\n    'name': ['Alice', 'Bob', 'Charlie'],\n    'age': [25, 30, 35],\n    'city': ['Tokyo', 'Osaka', 'Kyoto']\n})\n\n# From CSV\ndf = pd.read_csv('data.csv')\n\n# From Excel\ndf = pd.read_excel('data.xlsx')\n\nprint(df.head())",
+      "language": "python",
+      "description": "Pandas DataFrameを作成する様々な方法",
+      "tag_ids": [
+        3
+      ],
+      "usage_count": 0,
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "name": "Django Forms",
+      "code": "from django import forms\nfrom .models import Article\n\nclass ArticleForm(forms.ModelForm):\n    class Meta:\n        model = Article\n        fields = ['title', 'content', 'published']\n        widgets = {\n            'title': forms.TextInput(attrs={'class': 'form-control'}),\n            'content': forms.Textarea(attrs={\n                'class': 'form-control',\n                'rows': 10\n            }),\n        }\n\n    def clean_title(self):\n        title = self.cleaned_data['title']\n        if len(title) < 5:\n            raise forms.ValidationError('Title must be at least 5 characters')\n        return title",
+      "language": "python",
+      "description": "バリデーション付きDjango ModelForm",
+      "tag_ids": [
+        6
+      ],
+      "usage_count": 0,
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "name": "Django REST Framework ViewSet",
+      "code": "from rest_framework import viewsets\nfrom rest_framework.permissions import IsAuthenticatedOrReadOnly\nfrom .models import Article\nfrom .serializers import ArticleSerializer\n\nclass ArticleViewSet(viewsets.ModelViewSet):\n    queryset = Article.objects.all()\n    serializer_class = ArticleSerializer\n    permission_classes = [IsAuthenticatedOrReadOnly]\n\n    def get_queryset(self):\n        queryset = Article.objects.all()\n        published = self.request.query_params.get('published')\n        if published is not None:\n            queryset = queryset.filter(published=published)\n        return queryset\n\n    def perform_create(self, serializer):\n        serializer.save(author=self.request.user)",
+      "language": "python",
+      "description": "Django REST FrameworkのViewSet",
+      "tag_ids": [
+        6
+      ],
+      "usage_count": 0,
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "name": "GroupBy and Aggregation",
+      "code": "import pandas as pd\n\n# Group by single column\ngrouped = df.groupby('category')\nprint(grouped.mean())\nprint(grouped.sum())\nprint(grouped.count())\n\n# Group by multiple columns\ngrouped = df.groupby(['category', 'region'])\n\n# Multiple aggregations\nresult = df.groupby('category').agg({\n    'sales': ['sum', 'mean', 'count'],\n    'profit': ['sum', 'mean']\n})\n\nprint(result)",
+      "language": "python",
+      "description": "DataFrameのデータをグループ化・集計",
+      "tag_ids": [
+        3
+      ],
+      "usage_count": 0,
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "name": "Histogram",
+      "code": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndata = np.random.randn(1000)\n\nplt.figure(figsize=(10, 6))\nplt.hist(data, bins=30, edgecolor='black', alpha=0.7)\nplt.xlabel('Value')\nplt.ylabel('Frequency')\nplt.title('Histogram')\nplt.grid(axis='y', alpha=0.3)\nplt.show()",
+      "language": "python",
+      "description": "ヒストグラムを作成",
+      "tag_ids": [
+        2
+      ],
+      "usage_count": 0,
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "name": "Linear Regression",
+      "code": "from sklearn.linear_model import LinearRegression\nfrom sklearn.metrics import mean_squared_error, r2_score\n\n# Create and train model\nmodel = LinearRegression()\nmodel.fit(X_train, y_train)\n\n# Make predictions\ny_pred = model.predict(X_test)\n\n# Evaluate\nmse = mean_squared_error(y_test, y_pred)\nr2 = r2_score(y_test, y_pred)\n\nprint(f\"MSE: {mse:.4f}\")\nprint(f\"R² Score: {r2:.4f}\")",
+      "language": "python",
+      "description": "線形回帰モデルの訓練と評価",
+      "tag_ids": [
+        4
+      ],
+      "usage_count": 0,
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "name": "Matrix Operations",
+      "code": "import numpy as np\n\nA = np.array([[1, 2], [3, 4]])\nB = np.array([[5, 6], [7, 8]])\n\n# Matrix multiplication\nC = np.dot(A, B)\n# or\nC = A @ B\n\n# Transpose\nA_T = A.T\n\n# Inverse\nA_inv = np.linalg.inv(A)\n\n# Determinant\ndet = np.linalg.det(A)",
+      "language": "python",
+      "description": "NumPyによる線形代数演算",
+      "tag_ids": [
+        1
+      ],
+      "usage_count": 0,
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "name": "Model Definition",
+      "code": "from django.db import models\n\nclass Article(models.Model):\n    title = models.CharField(max_length=200)\n    content = models.TextField()\n    author = models.ForeignKey('auth.User', on_delete=models.CASCADE)\n    created_at = models.DateTimeField(auto_now_add=True)\n    updated_at = models.DateTimeField(auto_now=True)\n    published = models.BooleanField(default=False)\n\n    class Meta:\n        ordering = ['-created_at']\n        verbose_name_plural = 'Articles'\n\n    def __str__(self):\n        return self.title",
+      "language": "python",
+      "description": "リレーションシップ付きDjangoモデルを定義",
+      "tag_ids": [
+        6
+      ],
+      "usage_count": 0,
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "name": "Model Training",
+      "code": "# Train the model\nhistory = model.fit(\n    X_train, y_train,\n    batch_size=32,\n    epochs=10,\n    validation_split=0.2,\n    callbacks=[\n        keras.callbacks.EarlyStopping(\n            patience=3,\n            restore_best_weights=True\n        ),\n        keras.callbacks.ModelCheckpoint(\n            'best_model.h5',\n            save_best_only=True\n        )\n    ]\n)\n\n# Evaluate\ntest_loss, test_acc = model.evaluate(X_test, y_test)\nprint(f\"Test accuracy: {test_acc:.4f}\")",
+      "language": "python",
+      "description": "コールバック付きでKerasモデルを訓練",
+      "tag_ids": [
+        5
+      ],
+      "usage_count": 0,
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "name": "Random Forest Classifier",
+      "code": "from sklearn.ensemble import RandomForestClassifier\nfrom sklearn.metrics import classification_report, accuracy_score\n\n# Create and train model\nmodel = RandomForestClassifier(\n    n_estimators=100,\n    max_depth=10,\n    random_state=42\n)\nmodel.fit(X_train, y_train)\n\n# Make predictions\ny_pred = model.predict(X_test)\n\n# Evaluate\naccuracy = accuracy_score(y_test, y_pred)\nprint(f\"Accuracy: {accuracy:.4f}\")\nprint(classification_report(y_test, y_pred))",
+      "language": "python",
+      "description": "ランダムフォレスト分類器の訓練",
+      "tag_ids": [
+        4
+      ],
+      "usage_count": 0,
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "name": "Random Numbers",
+      "code": "import numpy as np\n\n# Set seed for reproducibility\nnp.random.seed(42)\n\n# Random integers\nrand_int = np.random.randint(0, 10, size=(3, 3))\n\n# Random floats [0, 1)\nrand_float = np.random.random((3, 3))\n\n# Normal distribution\nnormal = np.random.randn(1000)\n\n# Choice\nchoice = np.random.choice([1, 2, 3, 4, 5], size=10)",
+      "language": "python",
+      "description": "NumPyで乱数を生成する",
+      "tag_ids": [
+        1
+      ],
+      "usage_count": 0,
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "name": "Save and Load Model",
+      "code": "from tensorflow import keras\n\n# Save entire model\nmodel.save('my_model.h5')\n\n# Load model\nloaded_model = keras.models.load_model('my_model.h5')\n\n# Save only weights\nmodel.save_weights('model_weights.h5')\n\n# Load weights\nmodel.load_weights('model_weights.h5')\n\n# Make predictions\npredictions = loaded_model.predict(X_new)",
+      "language": "python",
+      "description": "Kerasモデルの保存と読み込み",
+      "tag_ids": [
+        5
+      ],
+      "usage_count": 0,
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "name": "Scatter Plot",
+      "code": "import matplotlib.pyplot as plt\nimport numpy as np\n\nx = np.random.randn(100)\ny = np.random.randn(100)\ncolors = np.random.rand(100)\nsizes = 1000 * np.random.rand(100)\n\nplt.figure(figsize=(10, 6))\nplt.scatter(x, y, c=colors, s=sizes, alpha=0.5, cmap='viridis')\nplt.colorbar()\nplt.xlabel('X')\nplt.ylabel('Y')\nplt.title('Scatter Plot')\nplt.show()",
+      "language": "python",
+      "description": "カラーマッピング付きの散布図を作成",
+      "tag_ids": [
+        2
+      ],
+      "usage_count": 0,
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "name": "Sequential Model",
+      "code": "from tensorflow import keras\nfrom tensorflow.keras import layers\n\n# Create Sequential model\nmodel = keras.Sequential([\n    layers.Dense(64, activation='relu', input_shape=(input_dim,)),\n    layers.Dropout(0.2),\n    layers.Dense(32, activation='relu'),\n    layers.Dropout(0.2),\n    layers.Dense(num_classes, activation='softmax')\n])\n\n# Compile model\nmodel.compile(\n    optimizer='adam',\n    loss='categorical_crossentropy',\n    metrics=['accuracy']\n)\n\nprint(model.summary())",
+      "language": "python",
+      "description": "Sequential型ニューラルネットワークモデルを作成",
+      "tag_ids": [
+        5
+      ],
+      "usage_count": 0,
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "name": "StandardScaler",
+      "code": "from sklearn.preprocessing import StandardScaler\n\n# Create scaler\nscaler = StandardScaler()\n\n# Fit and transform training data\nX_train_scaled = scaler.fit_transform(X_train)\n\n# Transform test data (use same scaler!)\nX_test_scaled = scaler.transform(X_test)\n\n# The scaler can be saved for later use\nimport joblib\njoblib.dump(scaler, 'scaler.pkl')\nloaded_scaler = joblib.load('scaler.pkl')",
+      "language": "python",
+      "description": "StandardScalerで特徴量を標準化",
+      "tag_ids": [
+        4
+      ],
+      "usage_count": 0,
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "name": "Subplots",
+      "code": "import matplotlib.pyplot as plt\nimport numpy as np\n\nx = np.linspace(0, 10, 100)\n\nfig, axes = plt.subplots(2, 2, figsize=(12, 10))\n\naxes[0, 0].plot(x, np.sin(x))\naxes[0, 0].set_title('sin(x)')\n\naxes[0, 1].plot(x, np.cos(x))\naxes[0, 1].set_title('cos(x)')\n\naxes[1, 0].plot(x, np.tan(x))\naxes[1, 0].set_title('tan(x)')\n\naxes[1, 1].plot(x, x**2)\naxes[1, 1].set_title('x²')\n\nplt.tight_layout()\nplt.show()",
+      "language": "python",
+      "description": "グリッド状に複数のサブプロットを作成",
+      "tag_ids": [
+        2
+      ],
+      "usage_count": 0,
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "name": "Train-Test Split",
+      "code": "from sklearn.model_selection import train_test_split\n\n# Split data into train and test sets\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y,\n    test_size=0.2,      # 20% for testing\n    random_state=42,    # For reproducibility\n    stratify=y          # Maintain class distribution\n)\n\nprint(f\"Train size: {len(X_train)}\")\nprint(f\"Test size: {len(X_test)}\")",
+      "language": "python",
+      "description": "データセットを訓練用とテスト用に分割",
+      "tag_ids": [
+        4
+      ],
+      "usage_count": 0,
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "name": "URL Patterns",
+      "code": "from django.urls import path\nfrom . import views\n\napp_name = 'articles'\n\nurlpatterns = [\n    path('', views.ArticleListView.as_view(), name='list'),\n    path('<int:pk>/', views.ArticleDetailView.as_view(), name='detail'),\n    path('create/', views.ArticleCreateView.as_view(), name='create'),\n    path('<int:pk>/update/', views.ArticleUpdateView.as_view(), name='update'),\n    path('<int:pk>/delete/', views.ArticleDeleteView.as_view(), name='delete'),\n]",
+      "language": "python",
+      "description": "DjangoアプリのURLパターンを定義",
+      "tag_ids": [
+        6
+      ],
+      "usage_count": 0,
+      "created_at": null,
+      "updated_at": null
+    }
+  ]
+}

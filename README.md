@@ -198,12 +198,28 @@ python main.py
 
 ### データ管理
 
-**エクスポート**:
-- JSON形式: 設定 → Export → JSON
-- Markdown形式: 設定 → Export → Markdown
+**エクスポート（別環境へのデータ移行）**:
+```bash
+# 現在のスニペットを全てJSONにエクスポート
+python export_snippets.py
 
-**インポート**:
-- 設定 → Import → ファイルを選択
+# カスタムファイル名を指定
+python export_snippets.py my_snippets.json
+```
+
+出力ファイル: `library_snippets.json` (デフォルト) または指定したファイル名
+- タグとスニペットの全データを含む
+- 29個のライブラリスニペット (NumPy, Matplotlib, Pandas, scikit-learn, TensorFlow/Keras, Django)
+- 日本語の説明文付き
+
+**インポート（別環境でデータを復元）**:
+```bash
+# JSONファイルからインポート（既存データを置き換え）
+python import_snippets.py library_snippets.json
+
+# マージモード（既存データを保持）
+python import_snippets.py library_snippets.json --merge
+```
 
 **バックアップ**:
 - 自動バックアップ: `backups/` ディレクトリに保存
