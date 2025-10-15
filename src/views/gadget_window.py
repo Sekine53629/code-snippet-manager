@@ -368,13 +368,15 @@ class GadgetWindow(QMainWindow):
             # Add snippet children
             for snippet in snippets:
                 snippet_item = QTreeWidgetItem()
-                # Display format: 📄 Name: Description
+                # Display format (2 lines):
+                # 📄 Name
+                #    Description
                 name = snippet['name']
                 desc = snippet.get('description', '')
                 if desc:
                     # Truncate long descriptions
-                    desc_short = desc if len(desc) <= 40 else desc[:37] + '...'
-                    display_text = f"  📄 {name}: {desc_short}"
+                    desc_short = desc if len(desc) <= 50 else desc[:47] + '...'
+                    display_text = f"  📄 {name}\n     {desc_short}"
                 else:
                     display_text = f"  📄 {name}"
                 snippet_item.setText(0, display_text)
@@ -468,12 +470,14 @@ class GadgetWindow(QMainWindow):
                 snippets = self.db_manager.get_snippets_by_tag(tag['id'])
                 for snippet in snippets:
                     snippet_item = QTreeWidgetItem()
-                    # Display format: 📄 Name: Description
+                    # Display format (2 lines):
+                    # 📄 Name
+                    #    Description
                     name = snippet['name']
                     desc = snippet.get('description', '')
                     if desc:
-                        desc_short = desc if len(desc) <= 40 else desc[:37] + '...'
-                        display_text = f"  📄 {name}: {desc_short}"
+                        desc_short = desc if len(desc) <= 50 else desc[:47] + '...'
+                        display_text = f"  📄 {name}\n     {desc_short}"
                     else:
                         display_text = f"  📄 {name}"
                     snippet_item.setText(0, display_text)
@@ -500,8 +504,8 @@ class GadgetWindow(QMainWindow):
                 name = snippet['name']
                 desc = snippet.get('description', '')
                 if desc:
-                    desc_short = desc if len(desc) <= 30 else desc[:27] + '...'
-                    display_text = f"📄 {name}: {desc_short} ({lang}, {score_pct}%)"
+                    desc_short = desc if len(desc) <= 50 else desc[:47] + '...'
+                    display_text = f"📄 {name} ({lang}, {score_pct}%)\n   {desc_short}"
                 else:
                     display_text = f"📄 {name} ({lang}, {score_pct}%)"
                 snippet_item.setText(0, display_text)

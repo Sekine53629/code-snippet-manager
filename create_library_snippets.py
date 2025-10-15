@@ -45,7 +45,7 @@ arr3 = np.ones((2, 3))
 arr4 = np.arange(0, 10, 2)
 arr5 = np.linspace(0, 1, 5)""",
             "language": "python",
-            "description": "Various ways to create NumPy arrays",
+            "description": "NumPy配列を作成する様々な方法",
             "tag_ids": [numpy_tag_id]
         },
         {
@@ -62,7 +62,7 @@ print(arr.sum())      # 21
 print(arr.mean())     # 3.5
 print(arr.max())      # 6""",
             "language": "python",
-            "description": "Common NumPy array operations and properties",
+            "description": "NumPy配列の基本的な操作とプロパティ",
             "tag_ids": [numpy_tag_id]
         },
         {
@@ -82,7 +82,7 @@ print(arr[::2, ::2])  # [[1, 3], [7, 9]]
 # Boolean indexing
 print(arr[arr > 5])   # [6, 7, 8, 9]""",
             "language": "python",
-            "description": "NumPy array indexing and slicing techniques",
+            "description": "NumPy配列のインデックス参照とスライス技法",
             "tag_ids": [numpy_tag_id]
         },
         {
@@ -106,7 +106,7 @@ A_inv = np.linalg.inv(A)
 # Determinant
 det = np.linalg.det(A)""",
             "language": "python",
-            "description": "Linear algebra operations with NumPy",
+            "description": "NumPyによる線形代数演算",
             "tag_ids": [numpy_tag_id]
         },
         {
@@ -128,7 +128,7 @@ normal = np.random.randn(1000)
 # Choice
 choice = np.random.choice([1, 2, 3, 4, 5], size=10)""",
             "language": "python",
-            "description": "Generate random numbers with NumPy",
+            "description": "NumPyで乱数を生成する",
             "tag_ids": [numpy_tag_id]
         }
     ]
@@ -161,7 +161,7 @@ plt.legend()
 plt.grid(True)
 plt.show()""",
             "language": "python",
-            "description": "Create a basic line plot with Matplotlib",
+            "description": "Matplotlibで基本的な折れ線グラフを作成",
             "tag_ids": [matplotlib_tag_id]
         },
         {
@@ -182,7 +182,7 @@ plt.ylabel('Y')
 plt.title('Scatter Plot')
 plt.show()""",
             "language": "python",
-            "description": "Create scatter plot with color mapping",
+            "description": "カラーマッピング付きの散布図を作成",
             "tag_ids": [matplotlib_tag_id]
         },
         {
@@ -209,7 +209,7 @@ axes[1, 1].set_title('x²')
 plt.tight_layout()
 plt.show()""",
             "language": "python",
-            "description": "Create multiple subplots in a grid",
+            "description": "グリッド状に複数のサブプロットを作成",
             "tag_ids": [matplotlib_tag_id]
         },
         {
@@ -227,7 +227,7 @@ plt.title('Bar Chart Example')
 plt.grid(axis='y', alpha=0.3)
 plt.show()""",
             "language": "python",
-            "description": "Create a bar chart",
+            "description": "棒グラフを作成",
             "tag_ids": [matplotlib_tag_id]
         },
         {
@@ -245,7 +245,7 @@ plt.title('Histogram')
 plt.grid(axis='y', alpha=0.3)
 plt.show()""",
             "language": "python",
-            "description": "Create a histogram",
+            "description": "ヒストグラムを作成",
             "tag_ids": [matplotlib_tag_id]
         }
     ]
@@ -280,7 +280,7 @@ df = pd.read_excel('data.xlsx')
 
 print(df.head())""",
             "language": "python",
-            "description": "Various ways to create Pandas DataFrames",
+            "description": "Pandas DataFrameを作成する様々な方法",
             "tag_ids": [pandas_tag_id]
         },
         {
@@ -299,7 +299,7 @@ print(df.columns)         # Column names
 print(df.dtypes)          # Data types
 print(df.isnull().sum())  # Missing values per column""",
             "language": "python",
-            "description": "Inspect DataFrame structure and content",
+            "description": "DataFrameの構造と内容を検査",
             "tag_ids": [pandas_tag_id]
         },
         {
@@ -323,7 +323,7 @@ df.loc[:, ['col1', 'col2']]
 df[df['age'] > 30]
 df[(df['age'] > 25) & (df['city'] == 'Tokyo')]""",
             "language": "python",
-            "description": "Select and filter DataFrame data",
+            "description": "DataFrameのデータを選択・フィルタリング",
             "tag_ids": [pandas_tag_id]
         },
         {
@@ -347,7 +347,7 @@ df['column'] = df['column'].astype('int')
 # Replace values
 df['column'].replace({'old': 'new'})""",
             "language": "python",
-            "description": "Clean and prepare DataFrame data",
+            "description": "DataFrameのデータをクリーニング・整形",
             "tag_ids": [pandas_tag_id]
         },
         {
@@ -371,7 +371,7 @@ result = df.groupby('category').agg({
 
 print(result)""",
             "language": "python",
-            "description": "Group and aggregate DataFrame data",
+            "description": "DataFrameのデータをグループ化・集計",
             "tag_ids": [pandas_tag_id]
         }
     ]
@@ -402,7 +402,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 print(f"Train size: {len(X_train)}")
 print(f"Test size: {len(X_test)}")""",
             "language": "python",
-            "description": "Split dataset into training and testing sets",
+            "description": "データセットを訓練用とテスト用に分割",
             "tag_ids": [sklearn_tag_id]
         },
         {
@@ -424,7 +424,7 @@ r2 = r2_score(y_test, y_pred)
 print(f"MSE: {mse:.4f}")
 print(f"R² Score: {r2:.4f}")""",
             "language": "python",
-            "description": "Train and evaluate Linear Regression model",
+            "description": "線形回帰モデルの訓練と評価",
             "tag_ids": [sklearn_tag_id]
         },
         {
@@ -448,7 +448,7 @@ accuracy = accuracy_score(y_test, y_pred)
 print(f"Accuracy: {accuracy:.4f}")
 print(classification_report(y_test, y_pred))""",
             "language": "python",
-            "description": "Train Random Forest classifier",
+            "description": "ランダムフォレスト分類器の訓練",
             "tag_ids": [sklearn_tag_id]
         },
         {
@@ -469,7 +469,7 @@ import joblib
 joblib.dump(scaler, 'scaler.pkl')
 loaded_scaler = joblib.load('scaler.pkl')""",
             "language": "python",
-            "description": "Standardize features using StandardScaler",
+            "description": "StandardScalerで特徴量を標準化",
             "tag_ids": [sklearn_tag_id]
         },
         {
@@ -490,7 +490,7 @@ print(f"CV Scores: {scores}")
 print(f"Mean: {scores.mean():.4f}")
 print(f"Std: {scores.std():.4f}")""",
             "language": "python",
-            "description": "Perform cross-validation",
+            "description": "交差検証を実行",
             "tag_ids": [sklearn_tag_id]
         }
     ]
@@ -529,7 +529,7 @@ model.compile(
 
 print(model.summary())""",
             "language": "python",
-            "description": "Create a Sequential neural network model",
+            "description": "Sequential型ニューラルネットワークモデルを作成",
             "tag_ids": [tf_tag_id]
         },
         {
@@ -554,7 +554,7 @@ model.compile(
     metrics=['accuracy']
 )""",
             "language": "python",
-            "description": "Create CNN for image classification",
+            "description": "画像分類用CNNモデルを作成",
             "tag_ids": [tf_tag_id]
         },
         {
@@ -581,7 +581,7 @@ history = model.fit(
 test_loss, test_acc = model.evaluate(X_test, y_test)
 print(f"Test accuracy: {test_acc:.4f}")""",
             "language": "python",
-            "description": "Train Keras model with callbacks",
+            "description": "コールバック付きでKerasモデルを訓練",
             "tag_ids": [tf_tag_id]
         },
         {
@@ -603,7 +603,7 @@ model.load_weights('model_weights.h5')
 # Make predictions
 predictions = loaded_model.predict(X_new)""",
             "language": "python",
-            "description": "Save and load Keras models",
+            "description": "Kerasモデルの保存と読み込み",
             "tag_ids": [tf_tag_id]
         }
     ]
@@ -638,7 +638,7 @@ class Article(models.Model):
     def __str__(self):
         return self.title""",
             "language": "python",
-            "description": "Define Django model with relationships",
+            "description": "リレーションシップ付きDjangoモデルを定義",
             "tag_ids": [django_tag_id]
         },
         {
@@ -664,7 +664,7 @@ class ArticleCreateView(CreateView):
     fields = ['title', 'content', 'published']
     success_url = reverse_lazy('article-list')""",
             "language": "python",
-            "description": "Django class-based views (CBVs)",
+            "description": "Djangoのクラスベースビュー (CBV)",
             "tag_ids": [django_tag_id]
         },
         {
@@ -682,7 +682,7 @@ urlpatterns = [
     path('<int:pk>/delete/', views.ArticleDeleteView.as_view(), name='delete'),
 ]""",
             "language": "python",
-            "description": "Define URL patterns for Django app",
+            "description": "DjangoアプリのURLパターンを定義",
             "tag_ids": [django_tag_id]
         },
         {
@@ -707,7 +707,7 @@ class ArticleViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)""",
             "language": "python",
-            "description": "Django REST Framework ViewSet",
+            "description": "Django REST FrameworkのViewSet",
             "tag_ids": [django_tag_id]
         },
         {
@@ -733,7 +733,7 @@ class ArticleForm(forms.ModelForm):
             raise forms.ValidationError('Title must be at least 5 characters')
         return title""",
             "language": "python",
-            "description": "Django ModelForm with validation",
+            "description": "バリデーション付きDjango ModelForm",
             "tag_ids": [django_tag_id]
         }
     ]
