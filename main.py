@@ -310,13 +310,14 @@ const increment = () => {
         # Show gadget window
         self.gadget_window.show()
 
-        # Start hotkey controller
-        print("Starting hotkey controller...")
-        self.hotkey_controller.start()
+        # Note: Hotkey monitoring is not fully implemented yet
+        # Global hotkey detection requires platform-specific permissions
+        # For now, users can manually show/hide the window
 
         # Enter event loop
         print("\nApplication started successfully!")
-        print("Press Ctrl twice quickly to toggle window visibility.")
+        print("Hotkey (Ctrl double-tap) requires additional setup.")
+        print("You can manually show/hide the window for now.")
         print("Press Ctrl+C in terminal to exit.\n")
 
         exit_code = self.app.exec()
@@ -329,10 +330,6 @@ const increment = () => {
     def cleanup(self):
         """Clean up resources before exit."""
         print("\nCleaning up...")
-
-        # Stop hotkey controller
-        if self.hotkey_controller:
-            self.hotkey_controller.stop()
 
         # Close database connections
         if self.db_manager:
