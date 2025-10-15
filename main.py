@@ -45,8 +45,7 @@ class CodeSnippetApp:
         self.app.setApplicationName("Code Snippet Manager")
         self.app.setApplicationVersion("1.0.0")
 
-        # Set application-wide settings
-        self.app.setAttribute(Qt.ApplicationAttribute.AA_UseHighDpiPixmaps)
+        # Note: AA_UseHighDpiPixmaps is deprecated in PyQt6 (automatically enabled)
 
         # Load configuration
         print("Loading configuration...")
