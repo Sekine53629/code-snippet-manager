@@ -207,18 +207,50 @@ python export_snippets.py
 python export_snippets.py my_snippets.json
 ```
 
-出力ファイル: `library_snippets.json` (デフォルト) または指定したファイル名
+出力ファイル: タイムスタンプ付きファイル名（デフォルト）または指定したファイル名
 - タグとスニペットの全データを含む
-- 29個のライブラリスニペット (NumPy, Matplotlib, Pandas, scikit-learn, TensorFlow/Keras, Django)
-- 日本語の説明文付き
+- メタデータ（エクスポート日時、バージョン、統計）付き
+
+**プリセット辞書（完全版）**: `complete_library_snippets_ja.json`
+- 52個の実用的なライブラリスニペット
+- 全て日本語の詳細説明付き
+- 6つの主要ライブラリをカバー:
+  - **NumPy** (6個): 配列操作、線形代数、乱数生成
+  - **Matplotlib** (5個): グラフ作成、可視化
+  - **Pandas** (6個): データ分析、DataFrame操作
+  - **scikit-learn** (6個): 機械学習、クロスバリデーション
+  - **TensorFlow/Keras** (4個): ディープラーニング
+  - **Django** (5個): Webフレームワーク
+- すぐに使える実践的なコードサンプル
 
 **インポート（別環境でデータを復元）**:
 ```bash
-# JSONファイルからインポート（既存データを置き換え）
+# プリセット辞書（完全版）をインポート
+python import_snippets.py complete_library_snippets_ja.json
+
+# カスタムJSONファイルからインポート（既存データを置き換え）
 python import_snippets.py library_snippets.json
 
 # マージモード（既存データを保持）
 python import_snippets.py library_snippets.json --merge
+```
+
+**クイックスタート（新規環境）**:
+```bash
+# 1. リポジトリをクローン
+git clone https://github.com/Sekine53629/code-snippet-manager.git
+cd code-snippet-manager
+
+# 2. セットアップ
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+
+# 3. プリセット辞書をインポート
+python import_snippets.py complete_library_snippets_ja.json
+
+# 4. アプリケーションを起動
+python main.py
 ```
 
 **バックアップ**:
