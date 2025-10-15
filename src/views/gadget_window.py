@@ -368,23 +368,24 @@ class GadgetWindow(QMainWindow):
             # Add snippet children
             for snippet in snippets:
                 snippet_item = QTreeWidgetItem()
-                # Display format (2 lines):
-                # 📄 Name
-                #    Description
+                # Display name in first line
                 name = snippet['name']
-                desc = snippet.get('description', '')
-                if desc:
-                    # Truncate long descriptions
-                    desc_short = desc if len(desc) <= 50 else desc[:47] + '...'
-                    display_text = f"  📄 {name}\n     {desc_short}"
-                else:
-                    display_text = f"  📄 {name}"
-                snippet_item.setText(0, display_text)
+                snippet_item.setText(0, f"  📄 {name}")
                 snippet_item.setData(0, Qt.ItemDataRole.UserRole, {'type': 'snippet', 'data': snippet})
 
                 # Set snippet color (lighter)
                 snippet_color = QColor("#AAAAAA")
                 snippet_item.setForeground(0, snippet_color)
+
+                # Add description as child item (second line)
+                desc = snippet.get('description', '')
+                if desc:
+                    desc_short = desc if len(desc) <= 50 else desc[:47] + '...'
+                    desc_item = QTreeWidgetItem()
+                    desc_item.setText(0, f"     {desc_short}")
+                    desc_item.setForeground(0, QColor("#888888"))  # Even lighter gray
+                    desc_item.setFlags(desc_item.flags() & ~Qt.ItemFlag.ItemIsSelectable)  # Non-selectable
+                    snippet_item.addChild(desc_item)
 
                 # Add usage count tooltip
                 if snippet['usage_count'] > 0:
@@ -470,20 +471,23 @@ class GadgetWindow(QMainWindow):
                 snippets = self.db_manager.get_snippets_by_tag(tag['id'])
                 for snippet in snippets:
                     snippet_item = QTreeWidgetItem()
-                    # Display format (2 lines):
-                    # 📄 Name
-                    #    Description
+                    # Display name in first line
                     name = snippet['name']
-                    desc = snippet.get('description', '')
-                    if desc:
-                        desc_short = desc if len(desc) <= 50 else desc[:47] + '...'
-                        display_text = f"  📄 {name}\n     {desc_short}"
-                    else:
-                        display_text = f"  📄 {name}"
-                    snippet_item.setText(0, display_text)
+                    snippet_item.setText(0, f"  📄 {name}")
                     snippet_item.setData(0, Qt.ItemDataRole.UserRole,
                                        {'type': 'snippet', 'data': snippet})
                     snippet_item.setForeground(0, QColor("#AAAAAA"))
+
+                    # Add description as child item (second line)
+                    desc = snippet.get('description', '')
+                    if desc:
+                        desc_short = desc if len(desc) <= 50 else desc[:47] + '...'
+                        desc_item = QTreeWidgetItem()
+                        desc_item.setText(0, f"     {desc_short}")
+                        desc_item.setForeground(0, QColor("#888888"))
+                        desc_item.setFlags(desc_item.flags() & ~Qt.ItemFlag.ItemIsSelectable)
+                        snippet_item.addChild(desc_item)
+
                     tag_item.addChild(snippet_item)
 
                 tags_root.addChild(tag_item)
@@ -502,15 +506,19 @@ class GadgetWindow(QMainWindow):
                 score_pct = int(score * 100)
                 lang = snippet.get('language', 'text')
                 name = snippet['name']
+                snippet_item.setText(0, f"📄 {name} ({lang}, {score_pct}%)")
+                snippet_item.setData(0, Qt.ItemDataRole.UserRole,
+                                   {'type': 'snippet', 'data': snippet})
+
+                # Add description as child item (second line)
                 desc = snippet.get('description', '')
                 if desc:
                     desc_short = desc if len(desc) <= 50 else desc[:47] + '...'
-                    display_text = f"📄 {name} ({lang}, {score_pct}%)\n   {desc_short}"
-                else:
-                    display_text = f"📄 {name} ({lang}, {score_pct}%)"
-                snippet_item.setText(0, display_text)
-                snippet_item.setData(0, Qt.ItemDataRole.UserRole,
-                                   {'type': 'snippet', 'data': snippet})
+                    desc_item = QTreeWidgetItem()
+                    desc_item.setText(0, f"   {desc_short}")
+                    desc_item.setForeground(0, QColor("#888888"))
+                    desc_item.setFlags(desc_item.flags() & ~Qt.ItemFlag.ItemIsSelectable)
+                    snippet_item.addChild(desc_item)
 
                 # Set color based on score
                 if score > 0.7:
