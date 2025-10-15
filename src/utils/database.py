@@ -240,6 +240,51 @@ class DatabaseManager:
 
         return snippets
 
+    def get_all_snippets(self, include_shared: bool = True) -> List[Dict[str, Any]]:
+        """Get all snippets from all tags.
+
+        Args:
+            include_shared: Whether to include snippets from shared database.
+
+        Returns:
+            List[Dict]: List of all snippets as dictionaries.
+        """
+        snippets = []
+
+        # Local snippets
+        with self.get_local_session() as session:
+            local_snippets = session.query(Snippet).order_by(Snippet.name).all()
+            for snippet in local_snippets:
+                snippets.append({
+                    'id': snippet.id,
+                    'name': snippet.name,
+                    'code': snippet.code,
+                    'description': snippet.description,
+                    'language': snippet.language,
+                    'usage_count': snippet.usage_count,
+                    'last_used': snippet.last_used,
+                    'source': 'local'
+                })
+
+        # Shared snippets (if enabled)
+        if include_shared and self.config.database.mode in ['shared', 'hybrid']:
+            with self.get_shared_session() as session:
+                if session:
+                    shared_snippets = session.query(Snippet).order_by(Snippet.name).all()
+                    for snippet in shared_snippets:
+                        snippets.append({
+                            'id': snippet.id,
+                            'name': snippet.name,
+                            'code': snippet.code,
+                            'description': snippet.description,
+                            'language': snippet.language,
+                            'usage_count': snippet.usage_count,
+                            'last_used': snippet.last_used,
+                            'source': 'shared'
+                        })
+
+        return snippets
+
     def search_snippets(self, query: str, language: Optional[str] = None,
                        include_shared: bool = True) -> List[Dict[str, Any]]:
         """Search snippets by text query.

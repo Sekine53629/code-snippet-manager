@@ -20,6 +20,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from src.utils.config import Config
 from src.utils.database import DatabaseManager
+from src.utils.fuzzy_search import fuzzy_search_snippets, fuzzy_search_tags
 from src.views.snippet_dialog import SnippetDialog
 
 
@@ -392,18 +393,117 @@ class GadgetWindow(QMainWindow):
         self.tree.expandAll()
 
     def _on_search_changed(self, text: str):
-        """Handle search input changes.
+        """Handle search input changes with fuzzy matching.
 
         Args:
             text: Search query text.
         """
         if not text:
+            # No search query - show all data
             self._load_data()
             return
 
-        # Search snippets
-        results = self.db_manager.search_snippets(text)
-        self.status_label.setText(f"Found {len(results)} results")
+        # Get all snippets and tags
+        all_snippets = self.db_manager.get_all_snippets()
+        all_tags = self.db_manager.get_all_tags()
+
+        # Perform fuzzy search
+        snippet_results = fuzzy_search_snippets(text, all_snippets, threshold=0.3)
+        tag_results = fuzzy_search_tags(text, all_tags, threshold=0.3)
+
+        # Build filtered tree
+        self._build_search_results(snippet_results, tag_results, text)
+
+        total_results = len(snippet_results) + len(tag_results)
+        self.status_label.setText(f"Found {total_results} results for '{text}'")
+
+    def _build_search_results(self, snippet_results, tag_results, query):
+        """Build tree widget from search results.
+
+        Args:
+            snippet_results: List of (snippet, score) tuples
+            tag_results: List of (tag, score) tuples
+            query: Search query for highlighting
+        """
+        self.tree.clear()
+
+        # Add matching tags
+        if tag_results:
+            tags_root = QTreeWidgetItem()
+            tags_root.setText(0, f"📁 Matching Tags ({len(tag_results)})")
+            tags_root.setForeground(0, QColor("#FFEB3B"))  # Yellow
+            self.tree.addTopLevelItem(tags_root)
+
+            for tag, score in tag_results:
+                tag_item = QTreeWidgetItem()
+                score_pct = int(score * 100)
+                tag_item.setText(0, f"{tag['icon']} {tag['name']} ({score_pct}%)")
+                tag_item.setData(0, Qt.ItemDataRole.UserRole, {'type': 'tag', 'data': tag})
+
+                # Set color based on score
+                if score > 0.7:
+                    color = QColor("#4CAF50")  # Green - high match
+                elif score > 0.5:
+                    color = QColor("#FFC107")  # Amber - medium match
+                else:
+                    color = QColor("#FF9800")  # Orange - low match
+                tag_item.setForeground(0, color)
+
+                # Add snippets from this tag
+                snippets = self.db_manager.get_snippets_by_tag(tag['id'])
+                for snippet in snippets:
+                    snippet_item = QTreeWidgetItem()
+                    snippet_item.setText(0, f"  📄 {snippet['name']}")
+                    snippet_item.setData(0, Qt.ItemDataRole.UserRole,
+                                       {'type': 'snippet', 'data': snippet})
+                    snippet_item.setForeground(0, QColor("#AAAAAA"))
+                    tag_item.addChild(snippet_item)
+
+                tags_root.addChild(tag_item)
+
+            tags_root.setExpanded(True)
+
+        # Add matching snippets
+        if snippet_results:
+            snippets_root = QTreeWidgetItem()
+            snippets_root.setText(0, f"📄 Matching Snippets ({len(snippet_results)})")
+            snippets_root.setForeground(0, QColor("#64B5F6"))  # Light blue
+            self.tree.addTopLevelItem(snippets_root)
+
+            for snippet, score in snippet_results:
+                snippet_item = QTreeWidgetItem()
+                score_pct = int(score * 100)
+                lang = snippet.get('language', 'text')
+                snippet_item.setText(0, f"📄 {snippet['name']} ({lang}, {score_pct}%)")
+                snippet_item.setData(0, Qt.ItemDataRole.UserRole,
+                                   {'type': 'snippet', 'data': snippet})
+
+                # Set color based on score
+                if score > 0.7:
+                    color = QColor("#4CAF50")  # Green
+                elif score > 0.5:
+                    color = QColor("#FFC107")  # Amber
+                else:
+                    color = QColor("#FF9800")  # Orange
+                snippet_item.setForeground(0, color)
+
+                # Add tooltip with match info
+                snippet_item.setToolTip(0,
+                    f"Match score: {score_pct}%\n"
+                    f"Language: {lang}\n"
+                    f"Usage: {snippet.get('usage_count', 0)} times"
+                )
+
+                snippets_root.addChild(snippet_item)
+
+            snippets_root.setExpanded(True)
+
+        # If no results, show message
+        if not snippet_results and not tag_results:
+            no_results = QTreeWidgetItem()
+            no_results.setText(0, f"No results for '{query}'")
+            no_results.setForeground(0, QColor("#888888"))
+            self.tree.addTopLevelItem(no_results)
 
     def _on_item_clicked(self, item: QTreeWidgetItem, column: int):
         """Handle tree item click.
