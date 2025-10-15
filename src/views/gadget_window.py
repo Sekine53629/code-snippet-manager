@@ -22,6 +22,7 @@ from src.utils.config import Config
 from src.utils.database import DatabaseManager
 from src.utils.fuzzy_search import fuzzy_search_snippets, fuzzy_search_tags
 from src.views.snippet_dialog import SnippetDialog
+from src.views.code_highlighter import apply_highlighter, normalize_language
 
 
 class GadgetWindow(QMainWindow):
@@ -253,6 +254,11 @@ class GadgetWindow(QMainWindow):
                 font-size: 12px;
             }
         """)
+
+        # Initialize syntax highlighter
+        self.highlighter = None
+        self.current_language = 'text'
+
         splitter.addWidget(self.preview)
 
         # Set initial sizes
@@ -518,24 +524,70 @@ class GadgetWindow(QMainWindow):
             return
 
         if item_data['type'] == 'snippet':
-            # Show snippet preview
+            # Show snippet preview with syntax highlighting
             snippet = item_data['data']
-            self.preview.setPlainText(snippet['code'])
-            lang = snippet['language'] or 'text'
-            self.status_label.setText(f"{snippet['name']} ({lang})")
+            self._show_snippet_preview(snippet)
         elif item_data['type'] == 'tag':
             # Show tag info
             tag = item_data['data']
             snippets = self.db_manager.get_snippets_by_tag(tag['id'])
             if snippets:
-                # Show first snippet
+                # Show first snippet with syntax highlighting
                 snippet = snippets[0]
-                self.preview.setPlainText(snippet['code'])
-                lang = snippet['language'] or 'text'
-                self.status_label.setText(f"{tag['name']}: {snippet['name']} ({lang})")
+                self._show_snippet_preview(snippet, tag_prefix=tag['name'])
             else:
                 self.preview.setPlainText(f"No snippets in '{tag['name']}'")
                 self.status_label.setText(f"{tag['name']} (empty)")
+                # Remove highlighter for plain text
+                if self.highlighter:
+                    self.highlighter.setDocument(None)
+                    self.highlighter = None
+
+    def _show_snippet_preview(self, snippet: dict, tag_prefix: str = None):
+        """Show snippet in preview panel with syntax highlighting.
+
+        Args:
+            snippet: Snippet dictionary with code and language
+            tag_prefix: Optional tag name prefix for status label
+        """
+        code = snippet.get('code', '')
+        language = snippet.get('language', 'text')
+        name = snippet.get('name', 'Unnamed')
+
+        # Set preview text
+        self.preview.setPlainText(code)
+
+        # Apply syntax highlighting
+        if language and language.lower() != 'text':
+            # Normalize language name
+            normalized_lang = normalize_language(language)
+
+            # Create or update highlighter
+            if self.highlighter is None or self.current_language != normalized_lang:
+                # Remove old highlighter if exists
+                if self.highlighter:
+                    self.highlighter.setDocument(None)
+
+                # Create new highlighter
+                self.highlighter = apply_highlighter(
+                    self.preview,
+                    language=normalized_lang,
+                    theme='dark'
+                )
+                self.current_language = normalized_lang
+        else:
+            # Remove highlighter for plain text
+            if self.highlighter:
+                self.highlighter.setDocument(None)
+                self.highlighter = None
+            self.current_language = 'text'
+
+        # Update status label
+        lang_display = language or 'text'
+        if tag_prefix:
+            self.status_label.setText(f"{tag_prefix}: {name} ({lang_display})")
+        else:
+            self.status_label.setText(f"{name} ({lang_display})")
 
     def _on_item_double_clicked(self, item: QTreeWidgetItem, column: int):
         """Handle tree item double click (copy to clipboard).
