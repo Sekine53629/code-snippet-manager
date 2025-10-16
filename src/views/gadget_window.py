@@ -91,6 +91,9 @@ class GadgetWindow(QMainWindow):
         # Enable hover events to ensure window receives mouse events
         self.setAttribute(Qt.WidgetAttribute.WA_Hover, True)
 
+        # CRITICAL: Prevent mouse event propagation to windows below
+        self.setAttribute(Qt.WidgetAttribute.WA_NoMousePropagation, True)
+
         # Size
         self.setFixedWidth(self.config.appearance.width)
         self.setMinimumHeight(self.config.appearance.height_min)
@@ -151,6 +154,9 @@ class GadgetWindow(QMainWindow):
 
         # Apply theme
         self._apply_theme()
+
+        # Install event filters on all child widgets to block wheel events
+        self._install_event_filters()
 
     def _create_header(self, parent_layout):
         """Create header with title and controls.
@@ -1101,6 +1107,17 @@ class GadgetWindow(QMainWindow):
         # Ensure window stays on top when focused
         if self.is_always_on_top:
             self.raise_()
+
+    def _install_event_filters(self):
+        """Install event filters on all child widgets to block wheel events."""
+        # Install on all child widgets recursively
+        for child in self.findChildren(QWidget):
+            child.installEventFilter(self)
+
+        # Also set window attributes to prevent event pass-through
+        self.setAttribute(Qt.WidgetAttribute.WA_NoMousePropagation, True)
+        for child in self.findChildren(QWidget):
+            child.setAttribute(Qt.WidgetAttribute.WA_NoMousePropagation, True)
 
     def eventFilter(self, obj, event):
         """Event filter to intercept all events."""
