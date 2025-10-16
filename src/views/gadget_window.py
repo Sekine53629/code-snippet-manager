@@ -54,7 +54,9 @@ class GadgetWindow(QMainWindow):
 
         # State
         self.is_visible = False
-        self.is_minimized = True
+        self.is_minimized = False
+        self.is_always_on_top = True  # Default: always on top
+        self.normal_height = None  # Store normal height for minimize/restore
 
         # Setup UI
         self._setup_window()
@@ -151,55 +153,77 @@ class GadgetWindow(QMainWindow):
 
         header.addStretch()
 
-        # Minimize button
-        btn_minimize = QPushButton("—")
-        btn_minimize.setFixedSize(32, 32)
-        btn_minimize.clicked.connect(self.hide_window)
-        btn_minimize.setToolTip("ウィンドウを非表示")
-        btn_minimize.setCursor(Qt.CursorShape.PointingHandCursor)
-        btn_minimize.setStyleSheet("""
+        # macOS-style window buttons container
+        button_container = QHBoxLayout()
+        button_container.setSpacing(8)
+
+        # Close button (Red) - 閉じる
+        self.btn_close = QPushButton()
+        self.btn_close.setFixedSize(14, 14)
+        self.btn_close.clicked.connect(self.close_application)
+        self.btn_close.setToolTip("アプリケーションを終了")
+        self.btn_close.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.btn_close.setStyleSheet("""
             QPushButton {
-                background-color: rgba(255, 189, 68, 200);
-                color: white;
-                border: 2px solid rgba(255, 189, 68, 255);
-                border-radius: 16px;
-                font-size: 18px;
-                font-weight: bold;
+                background-color: rgba(255, 95, 86, 255);
+                border: 1px solid rgba(200, 75, 66, 255);
+                border-radius: 7px;
+            }
+            QPushButton:hover {
+                background-color: rgba(255, 95, 86, 255);
+                border: 1px solid rgba(100, 40, 35, 255);
+            }
+            QPushButton:pressed {
+                background-color: rgba(200, 75, 66, 255);
+            }
+        """)
+        button_container.addWidget(self.btn_close)
+
+        # Minimize button (Yellow) - 最小化
+        self.btn_minimize = QPushButton()
+        self.btn_minimize.setFixedSize(14, 14)
+        self.btn_minimize.clicked.connect(self.toggle_minimize)
+        self.btn_minimize.setToolTip("ウィンドウを最小化/復元")
+        self.btn_minimize.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.btn_minimize.setStyleSheet("""
+            QPushButton {
+                background-color: rgba(255, 189, 68, 255);
+                border: 1px solid rgba(200, 150, 50, 255);
+                border-radius: 7px;
             }
             QPushButton:hover {
                 background-color: rgba(255, 189, 68, 255);
-                border: 2px solid rgba(255, 255, 255, 200);
+                border: 1px solid rgba(120, 90, 30, 255);
             }
             QPushButton:pressed {
                 background-color: rgba(200, 150, 50, 255);
             }
         """)
-        header.addWidget(btn_minimize)
+        button_container.addWidget(self.btn_minimize)
 
-        # Close button
-        btn_close = QPushButton("×")
-        btn_close.setFixedSize(32, 32)
-        btn_close.clicked.connect(self.close_application)
-        btn_close.setToolTip("アプリケーションを終了")
-        btn_close.setCursor(Qt.CursorShape.PointingHandCursor)
-        btn_close.setStyleSheet("""
+        # Always on top button (Green) - 常に最前面
+        self.btn_always_on_top = QPushButton()
+        self.btn_always_on_top.setFixedSize(14, 14)
+        self.btn_always_on_top.clicked.connect(self.toggle_always_on_top)
+        self.btn_always_on_top.setToolTip("常に最前面に固定/解除")
+        self.btn_always_on_top.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.btn_always_on_top.setStyleSheet("""
             QPushButton {
-                background-color: rgba(255, 69, 58, 200);
-                color: white;
-                border: 2px solid rgba(255, 69, 58, 255);
-                border-radius: 16px;
-                font-size: 22px;
-                font-weight: bold;
+                background-color: rgba(40, 205, 65, 255);
+                border: 1px solid rgba(30, 160, 50, 255);
+                border-radius: 7px;
             }
             QPushButton:hover {
-                background-color: rgba(255, 69, 58, 255);
-                border: 2px solid rgba(255, 255, 255, 200);
+                background-color: rgba(40, 205, 65, 255);
+                border: 1px solid rgba(20, 100, 35, 255);
             }
             QPushButton:pressed {
-                background-color: rgba(200, 50, 45, 255);
+                background-color: rgba(30, 160, 50, 255);
             }
         """)
-        header.addWidget(btn_close)
+        button_container.addWidget(self.btn_always_on_top)
+
+        header.addLayout(button_container)
 
         parent_layout.addLayout(header)
 
@@ -945,3 +969,71 @@ class GadgetWindow(QMainWindow):
         """Close the entire application."""
         from PyQt6.QtWidgets import QApplication
         QApplication.quit()
+
+    def toggle_minimize(self):
+        """Toggle window minimize/restore state."""
+        if self.is_minimized:
+            # Restore to normal size
+            if self.normal_height:
+                self.setMinimumHeight(self.config.appearance.height_min)
+                self.setMaximumHeight(self.config.appearance.height_max)
+                self.resize(self.width(), self.normal_height)
+                self.normal_height = None
+            self.is_minimized = False
+            self.btn_minimize.setToolTip("ウィンドウを最小化")
+        else:
+            # Minimize to title bar only
+            self.normal_height = self.height()
+            self.setMinimumHeight(50)
+            self.setMaximumHeight(50)
+            self.resize(self.width(), 50)
+            self.is_minimized = True
+            self.btn_minimize.setToolTip("ウィンドウを復元")
+
+    def toggle_always_on_top(self):
+        """Toggle always on top state."""
+        self.is_always_on_top = not self.is_always_on_top
+
+        # Get current window flags
+        flags = self.windowFlags()
+
+        if self.is_always_on_top:
+            # Add WindowStaysOnTopHint flag
+            flags |= Qt.WindowType.WindowStaysOnTopHint
+            self.btn_always_on_top.setStyleSheet("""
+                QPushButton {
+                    background-color: rgba(40, 205, 65, 255);
+                    border: 1px solid rgba(30, 160, 50, 255);
+                    border-radius: 7px;
+                }
+                QPushButton:hover {
+                    background-color: rgba(40, 205, 65, 255);
+                    border: 1px solid rgba(20, 100, 35, 255);
+                }
+                QPushButton:pressed {
+                    background-color: rgba(30, 160, 50, 255);
+                }
+            """)
+            self.btn_always_on_top.setToolTip("常に最前面に固定中（クリックで解除）")
+        else:
+            # Remove WindowStaysOnTopHint flag
+            flags &= ~Qt.WindowType.WindowStaysOnTopHint
+            self.btn_always_on_top.setStyleSheet("""
+                QPushButton {
+                    background-color: rgba(40, 205, 65, 120);
+                    border: 1px solid rgba(30, 160, 50, 255);
+                    border-radius: 7px;
+                }
+                QPushButton:hover {
+                    background-color: rgba(40, 205, 65, 180);
+                    border: 1px solid rgba(20, 100, 35, 255);
+                }
+                QPushButton:pressed {
+                    background-color: rgba(30, 160, 50, 255);
+                }
+            """)
+            self.btn_always_on_top.setToolTip("通常モード（クリックで最前面に固定）")
+
+        # Apply new flags
+        self.setWindowFlags(flags)
+        self.show()  # Need to show again after changing flags
