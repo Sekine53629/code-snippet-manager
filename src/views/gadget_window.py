@@ -68,15 +68,16 @@ class GadgetWindow(QMainWindow):
     def _setup_window(self):
         """Configure window properties."""
         # Window flags
+        # Note: Qt.WindowType.Tool removed - it conflicts with WindowStaysOnTopHint on macOS
         self.setWindowFlags(
             Qt.WindowType.FramelessWindowHint |
-            Qt.WindowType.WindowStaysOnTopHint |
-            Qt.WindowType.Tool
+            Qt.WindowType.WindowStaysOnTopHint
         )
 
         # Transparency
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-        self.setWindowOpacity(self.config.appearance.opacity_inactive)
+        # Use opacity_active for better readability (opacity_inactive is too transparent)
+        self.setWindowOpacity(self.config.appearance.opacity_active)
 
         # Size
         self.setFixedWidth(self.config.appearance.width)
@@ -266,41 +267,14 @@ class GadgetWindow(QMainWindow):
         self.tree.itemDoubleClicked.connect(self._on_item_double_clicked)
         self.tree.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.tree.customContextMenuRequested.connect(self._show_context_menu)
-        self.tree.setStyleSheet("""
-            QTreeWidget {
-                background-color: #1E1E1E;
-                color: white;
-                border: 1px solid #444444;
-                border-radius: 5px;
-                outline: none;
-            }
-            QTreeWidget::item {
-                padding: 5px;
-            }
-            QTreeWidget::item:hover {
-                background-color: #2A2A2A;
-            }
-            QTreeWidget::item:selected {
-                background-color: #0D47A1;
-            }
-        """)
+        # Style is now managed globally in main.py
         splitter.addWidget(self.tree)
 
         # Preview panel
         self.preview = QTextEdit()
         self.preview.setReadOnly(True)
         self.preview.setPlaceholderText("Select a snippet to preview...")
-        self.preview.setStyleSheet("""
-            QTextEdit {
-                background-color: #1E1E1E;
-                color: white;
-                border: 1px solid #444444;
-                border-radius: 5px;
-                padding: 10px;
-                font-family: 'Courier New', monospace;
-                font-size: 12px;
-            }
-        """)
+        # Style is now managed globally in main.py
 
         # Initialize syntax highlighter
         self.highlighter = None
@@ -1036,4 +1010,18 @@ class GadgetWindow(QMainWindow):
 
         # Apply new flags
         self.setWindowFlags(flags)
-        self.show()  # Need to show again after changing flags
+
+        # Re-apply critical attributes that may be lost after setWindowFlags()
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        # Note: Don't change window opacity here - it makes text hard to read
+
+        # Show window with new flags
+        self.show()
+
+        # Re-apply rounded mask after show
+        self._apply_rounded_mask()
+
+        # Raise window to ensure it's visible when turning always-on-top ON
+        if self.is_always_on_top:
+            self.raise_()
+            self.activateWindow()

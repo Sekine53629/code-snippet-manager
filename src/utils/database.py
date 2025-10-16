@@ -182,6 +182,44 @@ class DatabaseManager:
 
         return tags
 
+    def get_tag_by_id(self, tag_id: int, include_shared: bool = True) -> Optional[Dict[str, Any]]:
+        """Get a specific tag by ID.
+
+        Args:
+            tag_id: The tag ID to retrieve.
+            include_shared: Whether to search in shared database as well.
+
+        Returns:
+            Optional[Dict]: Tag as dictionary, or None if not found.
+        """
+        # Try local database first
+        with self.get_local_session() as session:
+            tag = session.query(Tag).filter(Tag.id == tag_id).first()
+            if tag:
+                return {
+                    'id': tag.id,
+                    'name': tag.name,
+                    'parent_id': tag.parent_id,
+                    'tag_type': tag.tag_type,
+                    'source': 'local'
+                }
+
+        # Try shared database if enabled
+        if include_shared and self.config.database.mode in ['shared', 'hybrid']:
+            with self.get_shared_session() as session:
+                if session:
+                    tag = session.query(Tag).filter(Tag.id == tag_id).first()
+                    if tag:
+                        return {
+                            'id': tag.id,
+                            'name': tag.name,
+                            'parent_id': tag.parent_id,
+                            'tag_type': tag.tag_type,
+                            'source': 'shared'
+                        }
+
+        return None
+
     def get_snippets_by_tag(self, tag_id: int, include_shared: bool = True) -> List[Dict[str, Any]]:
         """Get all snippets for a specific tag.
 
@@ -285,6 +323,52 @@ class DatabaseManager:
 
         return snippets
 
+    def get_snippet_by_id(self, snippet_id: int, include_shared: bool = True) -> Optional[Dict[str, Any]]:
+        """Get a specific snippet by ID.
+
+        Args:
+            snippet_id: The snippet ID to retrieve.
+            include_shared: Whether to search in shared database as well.
+
+        Returns:
+            Optional[Dict]: Snippet as dictionary, or None if not found.
+        """
+        # Try local database first
+        with self.get_local_session() as session:
+            snippet = session.query(Snippet).filter(Snippet.id == snippet_id).first()
+            if snippet:
+                return {
+                    'id': snippet.id,
+                    'name': snippet.name,
+                    'code': snippet.code,
+                    'description': snippet.description,
+                    'language': snippet.language,
+                    'usage_count': snippet.usage_count,
+                    'last_used': snippet.last_used,
+                    'is_favorite': snippet.is_favorite,
+                    'source': 'local'
+                }
+
+        # Try shared database if enabled
+        if include_shared and self.config.database.mode in ['shared', 'hybrid']:
+            with self.get_shared_session() as session:
+                if session:
+                    snippet = session.query(Snippet).filter(Snippet.id == snippet_id).first()
+                    if snippet:
+                        return {
+                            'id': snippet.id,
+                            'name': snippet.name,
+                            'code': snippet.code,
+                            'description': snippet.description,
+                            'language': snippet.language,
+                            'usage_count': snippet.usage_count,
+                            'last_used': snippet.last_used,
+                            'is_favorite': snippet.is_favorite,
+                            'source': 'shared'
+                        }
+
+        return None
+
     def search_snippets(self, query: str, language: Optional[str] = None,
                        include_shared: bool = True) -> List[Dict[str, Any]]:
         """Search snippets by text query.
@@ -348,7 +432,7 @@ class DatabaseManager:
         return results
 
     def add_snippet(self, name: str, code: str, language: Optional[str] = None,
-                   description: Optional[str] = None, tag_ids: Optional[List[int]] = None) -> Snippet:
+                   description: Optional[str] = None, tag_ids: Optional[List[int]] = None) -> int:
         """Add a new snippet to local database.
 
         Args:
@@ -359,7 +443,7 @@ class DatabaseManager:
             tag_ids: Optional list of tag IDs to associate with.
 
         Returns:
-            Snippet: Created snippet object.
+            int: Created snippet ID.
         """
         with self.get_local_session() as session:
             snippet = Snippet(
@@ -372,14 +456,16 @@ class DatabaseManager:
             session.add(snippet)
             session.flush()  # Get the ID
 
+            snippet_id = snippet.id  # Store ID before session closes
+
             # Associate with tags
             if tag_ids:
                 for tag_id in tag_ids:
-                    tag_snippet = TagSnippet(tag_id=tag_id, snippet_id=snippet.id)
+                    tag_snippet = TagSnippet(tag_id=tag_id, snippet_id=snippet_id)
                     session.add(tag_snippet)
 
             session.commit()
-            return snippet
+            return snippet_id
 
     def update_snippet(self, snippet_id: int, **kwargs) -> bool:
         """Update a snippet in local database.

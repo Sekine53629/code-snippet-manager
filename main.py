@@ -64,11 +64,7 @@ class CodeSnippetApp:
             db_manager=self.db_manager,
             config=self.config
         )
-
-        # Set window to always stay on top
-        self.gadget_window.setWindowFlags(
-            self.gadget_window.windowFlags() | Qt.WindowType.WindowStaysOnTopHint
-        )
+        # Window flags are managed in GadgetWindow._setup_window()
 
         # Initialize hotkey controller
         print("Initializing hotkey controller...")
@@ -220,9 +216,9 @@ const increment = () => {
         QPushButton:pressed {
             background-color: rgba(58, 58, 60, 130);
         }
-        /* Tree Widget - More opaque for readability */
+        /* Tree Widget - Balanced transparency with good readability */
         QTreeWidget {
-            background-color: rgba(44, 44, 46, 200);
+            background-color: rgba(44, 44, 46, 180);
             border: 2px solid rgba(255, 255, 255, 80);
             border-radius: 16px;
             outline: none;
@@ -236,16 +232,16 @@ const increment = () => {
             margin: 3px;
         }
         QTreeWidget::item:hover {
-            background-color: rgba(72, 72, 74, 150);
+            background-color: rgba(72, 72, 74, 130);
         }
         QTreeWidget::item:selected {
-            background-color: rgba(10, 132, 255, 180);
+            background-color: rgba(10, 132, 255, 160);
             color: #ffffff;
             border: 1px solid rgba(10, 132, 255, 120);
         }
-        /* Text Preview - More opaque for readability */
+        /* Text Preview - Slightly more opaque for code readability */
         QTextEdit {
-            background-color: rgba(28, 28, 30, 200);
+            background-color: rgba(28, 28, 30, 190);
             border: 2px solid rgba(255, 255, 255, 80);
             border-radius: 16px;
             color: #f5f5f7;
