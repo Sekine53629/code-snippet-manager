@@ -65,6 +65,9 @@ class GadgetWindow(QMainWindow):
         self._apply_rounded_mask()
         self._load_data()
 
+        # Install event filter to capture all wheel events
+        self.installEventFilter(self)
+
     def _setup_window(self):
         """Configure window properties."""
         # Window flags
@@ -1054,9 +1057,12 @@ class GadgetWindow(QMainWindow):
         self.raise_()
 
     def wheelEvent(self, event):
-        """Handle wheel event - ensure scrolling works within window."""
-        # Accept the event to prevent it from propagating to windows below
+        """Handle wheel event - ensure scrolling works within window and prevents propagation."""
+        # CRITICAL: Accept the event FIRST to prevent propagation to windows below
         event.accept()
+
+        # Stop event propagation immediately
+        event.setAccepted(True)
 
         # Find the widget under the cursor
         widget = self.childAt(event.position().toPoint())
@@ -1065,27 +1071,21 @@ class GadgetWindow(QMainWindow):
         if widget:
             # Walk up the widget hierarchy to find scrollable widgets
             current = widget
-            while current:
+            while current and current != self:
                 if isinstance(current, (QTreeWidget, QTextEdit)):
-                    # Create a new wheel event for the target widget
-                    from PyQt6.QtGui import QWheelEvent
-                    new_event = QWheelEvent(
-                        event.position(),
-                        event.globalPosition(),
-                        event.pixelDelta(),
-                        event.angleDelta(),
-                        event.buttons(),
-                        event.modifiers(),
-                        event.phase(),
-                        event.inverted()
-                    )
-                    # Send the event to the scrollable widget
-                    QTreeWidget.wheelEvent(current, new_event) if isinstance(current, QTreeWidget) else QTextEdit.wheelEvent(current, new_event)
+                    # Directly call the widget's wheel event handler
+                    # This keeps the event within our window
+                    if isinstance(current, QTreeWidget):
+                        QTreeWidget.wheelEvent(current, event)
+                    else:
+                        QTextEdit.wheelEvent(current, event)
+                    # Event is consumed, return immediately
                     return
                 current = current.parentWidget()
 
-        # If no scrollable widget found, still accept to prevent propagation
-        super().wheelEvent(event)
+        # If no scrollable widget found, event is still consumed (accept() was called)
+        # DO NOT call super().wheelEvent() - that would propagate to windows below
+        # Event is already accepted, so it won't propagate
 
     def mousePressEvent(self, event):
         """Handle mouse press event - ensure window handles clicks."""
@@ -1101,3 +1101,37 @@ class GadgetWindow(QMainWindow):
         # Ensure window stays on top when focused
         if self.is_always_on_top:
             self.raise_()
+
+    def eventFilter(self, obj, event):
+        """Event filter to intercept all events."""
+        from PyQt6.QtCore import QEvent
+
+        # Intercept ALL wheel events on this window and its children
+        if event.type() == QEvent.Type.Wheel:
+            # If the event is on our window or any of our children
+            if obj == self or obj.window() == self:
+                # Accept and consume the event immediately
+                event.accept()
+
+                # Forward to appropriate scrollable widget if needed
+                if isinstance(obj, (QTreeWidget, QTextEdit)):
+                    # Let the widget handle it
+                    return False  # Continue processing
+
+                # Check if cursor is over a scrollable widget
+                cursor_pos = event.position().toPoint() if hasattr(event, 'position') else event.pos()
+                widget = self.childAt(cursor_pos)
+
+                if widget:
+                    current = widget
+                    while current and current != self:
+                        if isinstance(current, (QTreeWidget, QTextEdit)):
+                            # Forward to scrollable widget
+                            return False  # Continue processing
+                        current = current.parentWidget()
+
+                # No scrollable widget found - consume event completely
+                return True  # Block event
+
+        # Let other events pass through
+        return super().eventFilter(obj, event)
