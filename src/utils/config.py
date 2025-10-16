@@ -41,7 +41,7 @@ class AppearanceConfig(BaseModel):
     width_max: int = 800
 
     height_min: int = 400
-    height_max: int = 1200
+    height_max: int = 800  # Reduced from 1200 to fit preview on screen
 
     theme: str = Field(default='dark', description="UI theme: 'dark' or 'light'")
 

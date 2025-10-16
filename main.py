@@ -163,8 +163,9 @@ const increment = () => {
         # Set window opacity
         self.gadget_window.setWindowOpacity(appearance.opacity_active)
 
-        # Set initial size
-        self.gadget_window.resize(appearance.width_max, appearance.height_max)
+        # Set initial size - use 75% of max height to ensure it fits on screen
+        initial_height = int(appearance.height_max * 0.75)  # 800 * 0.75 = 600px
+        self.gadget_window.resize(appearance.width_max, initial_height)
 
         # Set theme
         if appearance.theme == 'dark':

@@ -301,8 +301,9 @@ class GadgetWindow(QMainWindow):
 
         splitter.addWidget(self.preview)
 
-        # Set initial sizes
-        splitter.setSizes([250, 150])
+        # Set initial sizes - Tree view 2:1 Preview (66%:33%)
+        # This ensures preview fits on screen while giving more space to tree
+        splitter.setSizes([400, 200])
 
         parent_layout.addWidget(splitter, 1)
 
