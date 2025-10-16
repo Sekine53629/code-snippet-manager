@@ -79,6 +79,15 @@ class GadgetWindow(QMainWindow):
         # Use opacity_active for better readability (opacity_inactive is too transparent)
         self.setWindowOpacity(self.config.appearance.opacity_active)
 
+        # Enable mouse tracking to capture all mouse events
+        self.setMouseTracking(True)
+
+        # Set focus policy to accept focus and capture input
+        self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+
+        # Enable hover events to ensure window receives mouse events
+        self.setAttribute(Qt.WidgetAttribute.WA_Hover, True)
+
         # Size
         self.setFixedWidth(self.config.appearance.width)
         self.setMinimumHeight(self.config.appearance.height_min)
@@ -100,8 +109,9 @@ class GadgetWindow(QMainWindow):
             # Left edge
             x = self.config.appearance.offset_x
 
-        # Vertical center with offset
-        y = (screen.height() - self.height()) // 2 + self.config.appearance.offset_y
+        # Position at top of screen with offset
+        # Offset from top to avoid menu bar (typically 25-30px on macOS)
+        y = 50 + self.config.appearance.offset_y
 
         self.move(x, y)
 
@@ -237,6 +247,9 @@ class GadgetWindow(QMainWindow):
         self.search_input = QLineEdit()
         self.search_input.setPlaceholderText("🔍 Search snippets...")
         self.search_input.textChanged.connect(self._on_search_changed)
+        # Enable mouse tracking for search input
+        self.search_input.setMouseTracking(True)
+        self.search_input.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         self.search_input.setStyleSheet("""
             QLineEdit {
                 background-color: #2E2E2E;
@@ -267,6 +280,9 @@ class GadgetWindow(QMainWindow):
         self.tree.itemDoubleClicked.connect(self._on_item_double_clicked)
         self.tree.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.tree.customContextMenuRequested.connect(self._show_context_menu)
+        # Enable mouse tracking for tree widget
+        self.tree.setMouseTracking(True)
+        self.tree.setFocusPolicy(Qt.FocusPolicy.WheelFocus)
         # Style is now managed globally in main.py
         splitter.addWidget(self.tree)
 
@@ -274,6 +290,9 @@ class GadgetWindow(QMainWindow):
         self.preview = QTextEdit()
         self.preview.setReadOnly(True)
         self.preview.setPlaceholderText("Select a snippet to preview...")
+        # Enable mouse tracking for preview widget
+        self.preview.setMouseTracking(True)
+        self.preview.setFocusPolicy(Qt.FocusPolicy.WheelFocus)
         # Style is now managed globally in main.py
 
         # Initialize syntax highlighter
@@ -1025,3 +1044,59 @@ class GadgetWindow(QMainWindow):
         if self.is_always_on_top:
             self.raise_()
             self.activateWindow()
+
+    def enterEvent(self, event):
+        """Handle mouse enter event - activate window to capture input."""
+        super().enterEvent(event)
+        # Activate window when mouse enters to ensure input is captured
+        self.activateWindow()
+        self.raise_()
+
+    def wheelEvent(self, event):
+        """Handle wheel event - ensure scrolling works within window."""
+        # Accept the event to prevent it from propagating to windows below
+        event.accept()
+
+        # Find the widget under the cursor
+        widget = self.childAt(event.position().toPoint())
+
+        # If the widget is a QTreeWidget or QTextEdit, forward the event to it
+        if widget:
+            # Walk up the widget hierarchy to find scrollable widgets
+            current = widget
+            while current:
+                if isinstance(current, (QTreeWidget, QTextEdit)):
+                    # Create a new wheel event for the target widget
+                    from PyQt6.QtGui import QWheelEvent
+                    new_event = QWheelEvent(
+                        event.position(),
+                        event.globalPosition(),
+                        event.pixelDelta(),
+                        event.angleDelta(),
+                        event.buttons(),
+                        event.modifiers(),
+                        event.phase(),
+                        event.inverted()
+                    )
+                    # Send the event to the scrollable widget
+                    QTreeWidget.wheelEvent(current, new_event) if isinstance(current, QTreeWidget) else QTextEdit.wheelEvent(current, new_event)
+                    return
+                current = current.parentWidget()
+
+        # If no scrollable widget found, still accept to prevent propagation
+        super().wheelEvent(event)
+
+    def mousePressEvent(self, event):
+        """Handle mouse press event - ensure window handles clicks."""
+        event.accept()
+        # Activate window on click
+        self.activateWindow()
+        self.raise_()
+        super().mousePressEvent(event)
+
+    def focusInEvent(self, event):
+        """Handle focus in event."""
+        super().focusInEvent(event)
+        # Ensure window stays on top when focused
+        if self.is_always_on_top:
+            self.raise_()
