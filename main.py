@@ -160,11 +160,11 @@ const increment = () => {
         """Apply appearance settings from config."""
         appearance = self.config.appearance
 
-        # Set window opacity
+        # Set window opacity from config (0.8 = good balance for event handling)
         self.gadget_window.setWindowOpacity(appearance.opacity_active)
 
-        # Set initial size - use 75% of max height to ensure it fits on screen
-        initial_height = int(appearance.height_max * 0.75)  # 800 * 0.75 = 600px
+        # Set initial size - fixed height to avoid overlapping with Dock
+        initial_height = 750  # Larger window for better preview visibility
         self.gadget_window.resize(appearance.width_max, initial_height)
 
         # Set theme

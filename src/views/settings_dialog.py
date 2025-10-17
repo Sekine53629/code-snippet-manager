@@ -342,10 +342,16 @@ class SettingsDialog(QDialog):
 
     def _apply(self):
         """Apply settings without closing."""
+        from src.utils.config import save_config
+
         self._save_settings()
         # Copy temp config back to original
         for key, value in self.temp_config.model_dump().items():
             setattr(self.config, key, value)
+
+        # Save to config file
+        save_config(self.config)
+
         self.settings_changed.emit()
 
     def _save_and_close(self):

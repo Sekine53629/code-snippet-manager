@@ -123,17 +123,23 @@ class GadgetWindow(QMainWindow):
 
     def _setup_ui(self):
         """Create and layout UI components."""
-        # Central widget
+        # Central widget with solid background to capture events
         central = QWidget()
         self.setCentralWidget(central)
 
-        # Apply rounded corners to central widget for rounded window effect
+        # CRITICAL: Set solid background to ensure macOS recognizes this as a clickable area
+        # Even though opacity is set at window level, we need a non-transparent background
         central.setStyleSheet("""
             QWidget {
-                background-color: transparent;
+                background-color: rgba(28, 28, 30, 255);
                 border-radius: 20px;
             }
         """)
+
+        # Enable mouse tracking and event acceptance on central widget
+        central.setMouseTracking(True)
+        central.setAttribute(Qt.WidgetAttribute.WA_NoMousePropagation, True)
+        central.installEventFilter(self)
 
         # Main layout
         layout = QVBoxLayout(central)
@@ -311,8 +317,8 @@ class GadgetWindow(QMainWindow):
         splitter.addWidget(self.preview)
 
         # Set initial sizes - Tree view 2:1 Preview (66%:33%)
-        # This ensures preview fits on screen while giving more space to tree
-        splitter.setSizes([400, 200])
+        # Increased height for better preview visibility while avoiding Dock overlap
+        splitter.setSizes([470, 230])
 
         parent_layout.addWidget(splitter, 1)
 
@@ -348,6 +354,24 @@ class GadgetWindow(QMainWindow):
             }
         """)
         footer.addWidget(btn_new)
+
+        # Settings button
+        btn_settings = QPushButton("⚙ Settings")
+        btn_settings.clicked.connect(self._open_settings)
+        btn_settings.setStyleSheet("""
+            QPushButton {
+                background-color: #616161;
+                color: white;
+                border: none;
+                border-radius: 3px;
+                padding: 5px 15px;
+                font-size: 11px;
+            }
+            QPushButton:hover {
+                background-color: #757575;
+            }
+        """)
+        footer.addWidget(btn_settings)
 
         parent_layout.addLayout(footer)
 
@@ -914,6 +938,33 @@ class GadgetWindow(QMainWindow):
 
         # Reload tree
         self._load_data()
+
+    def _open_settings(self):
+        """Open settings dialog (from Settings button)."""
+        from src.views.settings_dialog import SettingsDialog
+
+        # Open settings dialog
+        dialog = SettingsDialog(self.config, self)
+        dialog.settings_changed.connect(self._on_settings_changed)
+
+        if dialog.exec():
+            self.status_label.setText("✓ Settings saved")
+        else:
+            self.status_label.setText("Settings cancelled")
+
+    def _on_settings_changed(self):
+        """Handle settings changes from dialog."""
+        # Apply updated appearance settings
+        self.setWindowOpacity(self.config.appearance.opacity_active)
+
+        # Resize window if dimensions changed
+        self.resize(self.config.appearance.width_max, self.height())
+
+        # Reposition window if position settings changed
+        self._position_window()
+
+        # Note: Theme changes require restart for full effect
+        self.status_label.setText("✓ Settings applied (restart for theme change)")
 
     def _on_snippet_updated(self, snippet_data):
         """Handle snippet update.

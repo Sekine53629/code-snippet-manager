@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.0.5",
   "database": {
     "mode": "local",
     "local": {
@@ -18,14 +18,14 @@
     "position": "right",
     "offset_x": 10,
     "offset_y": 0,
-    "opacity_active": 0.95,
+    "opacity_active": 0.8,
     "opacity_inactive": 0.3,
     "opacity_transition": 300,
     "width": 350,
     "width_min": 250,
     "width_max": 800,
     "height_min": 400,
-    "height_max": 1200,
+    "height_max": 800,
     "theme": "dark"
   },
   "hotkey": {

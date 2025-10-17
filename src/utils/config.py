@@ -32,7 +32,7 @@ class AppearanceConfig(BaseModel):
     offset_x: int = Field(default=10, description="Horizontal offset from screen edge")
     offset_y: int = Field(default=0, description="Vertical offset from center")
 
-    opacity_active: float = Field(default=0.95, ge=0.1, le=1.0)
+    opacity_active: float = Field(default=0.8, ge=0.1, le=1.0)
     opacity_inactive: float = Field(default=0.3, ge=0.1, le=1.0)
     opacity_transition: int = Field(default=300, description="Transition time in ms")
 
@@ -89,7 +89,7 @@ class SearchConfig(BaseModel):
 
 class Config(BaseModel):
     """Main application configuration."""
-    version: str = Field(default='1.0.0')
+    version: str = Field(default='1.0.5')
 
     database: DatabaseConfig = DatabaseConfig()
     appearance: AppearanceConfig = AppearanceConfig()
